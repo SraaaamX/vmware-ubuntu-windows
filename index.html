@@ -151,6 +151,9 @@
                     class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Introduction</a>
 
                 <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Installation</div>
+                <a href="#virtualization"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">00.
+                    Virtualisation</a>
                 <a href="#prerequisites"
                     class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">01.
                     Prérequis</a>
@@ -198,6 +201,280 @@
                 </h1>
                 <div class="w-24 h-1 bg-white mx-auto rounded-full opacity-20"></div>
             </header>
+
+            <!-- SECTION 0: VIRTUALIZATION -->
+            <section id="virtualization" class="space-y-8 scroll-mt-24">
+                <div class="flex items-center gap-4 pb-4 border-b border-border">
+                    <span class="font-mono font-bold text-2xl text-muted">00</span>
+                    <h2 class="text-2xl font-bold text-white">Virtualisation & Hyper-V</h2>
+                </div>
+
+                <div class="plate p-6 rounded-xl border-l-4 border-red-500">
+                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                        <span class="text-red-500">⚠️</span>
+                        Conflit VMware vs Hyper-V (WSL2/Docker)
+                    </h4>
+                    <p class="text-sm text-muted leading-relaxed">
+                        <strong>Important :</strong> La virtualisation VMware est incompatible avec les fonctionnalités
+                        <strong>Windows</strong> utilisant Hyper-V.<br>
+                        Cela inclut <strong>WSL2</strong>, <strong>Docker Desktop pour Windows</strong>, le <strong>bac
+                            à sable (Sandbox)</strong> ou l'<strong>isolation du noyau</strong>.<br>
+                        Vous ne pouvez pas utiliser VMware et ces outils Windows simultanément.
+                    </p>
+                </div>
+
+                <!-- BIOS -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">1. Activation BIOS (Obligatoire)</h3>
+                    <div class="plate p-8 rounded-xl space-y-4">
+                        <p class="text-muted text-sm">Avant tout, la virtualisation doit être activée au niveau matériel
+                            (BIOS).</p>
+                        <ul class="space-y-2 text-sm text-muted">
+                            <li class="flex items-center gap-3">
+                                <span class="text-green-500">✓</span>
+                                <span>Redémarrez et accédez au BIOS (F2, Del, F12...)</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="text-green-500">✓</span>
+                                <span>Cherchez <strong>Intel Virtualization Technology (VT-x)</strong> ou
+                                    <strong>AMD-V</strong></span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="text-green-500">✓</span>
+                                <span>Mettez-le sur <strong>Enabled</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Windows Features & VMware Settings -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">2. Configuration Windows & VMware</h3>
+                    <div class="plate p-8 rounded-xl space-y-6">
+                        <div>
+                            <h4 class="font-bold text-white text-sm mb-2">A. Désactiver Hyper-V dans Windows</h4>
+                            <p class="text-xs text-muted mb-3">Pour que VMware fonctionne (Mode 1), il faut tout
+                                décocher :</p>
+                            <ol class="list-decimal list-inside text-sm text-muted space-y-1 marker:text-white">
+                                <li>Cherchez "Activer ou désactiver des fonctionnalités Windows"</li>
+                                <li><strong>Décochez</strong> tout ce qui concerne "Hyper-V"</li>
+                                <li><strong>Décochez</strong> "Plateforme d'ordinateur virtuel" (Virtual Machine
+                                    Platform)</li>
+                                <li><strong>Décochez</strong> "Plateforme de l'hyperviseur Windows" (Windows Hypervisor
+                                    Platform)</li>
+                            </ol>
+                        </div>
+
+                        <div class="pt-4 border-t border-border mt-4">
+                            <h4 class="font-bold text-white text-sm mb-2">B. Réglages VMware</h4>
+                            <p class="text-xs text-muted mb-3">Dans les réglages de votre VM :</p>
+                            <ol class="list-decimal list-inside text-sm text-muted space-y-1 marker:text-white">
+                                <li>Allez dans <strong>VM Settings > Processors</strong></li>
+                                <li>Cochez <strong>Virtualize Intel VT-x/EPT or AMD-V/RVI</strong></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toggler Script -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">3. Switcher Facilement (Script)</h3>
+                    <div class="plate p-8 rounded-xl space-y-6">
+                        <p class="text-muted text-sm">
+                            Ce script permet de basculer entre le mode <strong>VMware</strong> (Hyper-V OFF) et le mode
+                            <strong>WSL2/Docker</strong> (Hyper-V ON).
+                        </p>
+
+                        <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg">
+                            <h4 class="font-bold text-yellow-500 mb-2">⚡ Réactivation (WSL2/Docker)</h4>
+                            <p class="text-sm text-yellow-200/80">
+                                L'option <strong>[2] ACTIVER</strong> du script va réactiver l'hyperviseur.<br>
+                                <strong>Toutefois :</strong> Pensez à vérifier que les cases de l'étape 2A (notamment
+                                <em>Plateforme d'ordinateur virtuel</em>) sont bien <strong>recochées</strong> dans les
+                                fonctionnalités Windows pour que WSL2 fonctionne correctement.
+                            </p>
+                        </div>
+
+                        <p class="text-muted text-sm">Créez un fichier
+                            <code>hyperv_toggle.bat</code> sur votre bureau et collez-y ce code :
+                        </p>
+
+                        <div class="relative group">
+                            <pre
+                                class="well p-4 rounded-lg overflow-x-auto text-xs text-muted font-mono leading-relaxed h-64">@echo off
+echo ============================================
+echo   Gestion Hyper-V et Isolation du noyau
+echo ============================================
+echo.
+
+REM Verification des privileges administrateur
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    echo ERREUR: Ce script doit etre execute en tant qu'administrateur!
+    echo Faites un clic droit sur le fichier et choisissez "Executer en tant qu'administrateur"
+    pause
+    exit /b 1
+)
+
+:MENU
+echo.
+echo Que voulez-vous faire ?
+echo.
+echo [1] DESACTIVER Hyper-V (pour utiliser VMware)
+echo [2] ACTIVER Hyper-V (pour utiliser WSL2/Docker)
+echo [3] Quitter
+echo.
+set /p choix="Votre choix (1, 2 ou 3) : "
+
+if "%choix%"=="1" goto DESACTIVER
+if "%choix%"=="2" goto ACTIVER
+if "%choix%"=="3" goto FIN
+echo Choix invalide!
+goto MENU
+
+:DESACTIVER
+echo.
+echo ============================================
+echo DESACTIVATION de Hyper-V et Isolation
+echo ============================================
+echo.
+
+echo [1/4] Desactivation du lancement de l'hyperviseur...
+bcdedit /set hypervisorlaunchtype off
+if %errorLevel% equ 0 (
+    echo OK - Hyperviseur desactive
+) else (
+    echo ERREUR lors de la desactivation de l'hyperviseur
+)
+echo.
+
+echo [2/4] Desactivation de Hyper-V...
+powershell -Command "Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart"
+if %errorLevel% equ 0 (
+    echo OK - Hyper-V desactive
+) else (
+    echo ERREUR lors de la desactivation de Hyper-V
+)
+echo.
+
+echo [3/4] Desactivation de la plateforme d'hyperviseur...
+powershell -Command "Disable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -NoRestart"
+if %errorLevel% equ 0 (
+    echo OK - Plateforme d'hyperviseur desactivee
+) else (
+    echo ERREUR lors de la desactivation de HypervisorPlatform
+)
+echo.
+
+echo [4/4] Desactivation de l'integrite de la memoire...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v "Enabled" /t REG_DWORD /d 0 /f >nul 2>&1
+if %errorLevel% equ 0 (
+    echo OK - Integrite de la memoire desactivee
+) else (
+    echo ERREUR lors de la modification du registre
+)
+echo.
+
+echo ============================================
+echo DESACTIVATION TERMINEE !
+echo VMware sera fonctionnel apres redemarrage
+echo ============================================
+goto REDEMARRAGE
+
+:ACTIVER
+echo.
+echo ============================================
+echo ACTIVATION de Hyper-V et Isolation
+echo ============================================
+echo.
+
+echo [1/4] Activation du lancement de l'hyperviseur...
+bcdedit /set hypervisorlaunchtype auto
+if %errorLevel% equ 0 (
+    echo OK - Hyperviseur active
+) else (
+    echo ERREUR lors de l'activation de l'hyperviseur
+)
+echo.
+
+echo [2/4] Activation de Hyper-V...
+powershell -Command "Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart"
+if %errorLevel% equ 0 (
+    echo OK - Hyper-V active
+) else (
+    echo ERREUR lors de l'activation de Hyper-V
+)
+echo.
+
+echo [3/4] Activation de la plateforme d'hyperviseur...
+powershell -Command "Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -NoRestart"
+if %errorLevel% equ 0 (
+    echo OK - Plateforme d'hyperviseur activee
+) else (
+    echo ERREUR lors de l'activation de HypervisorPlatform
+)
+echo.
+
+echo [4/4] Activation de l'integrite de la memoire...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v "Enabled" /t REG_DWORD /d 1 /f >nul 2>&1
+if %errorLevel% equ 0 (
+    echo OK - Integrite de la memoire activee
+) else (
+    echo ERREUR lors de la modification du registre
+)
+echo.
+
+echo ============================================
+echo ACTIVATION TERMINEE !
+echo WSL2/Docker/Hyper-V seront fonctionnels apres redemarrage
+echo ============================================
+goto REDEMARRAGE
+
+:REDEMARRAGE
+echo.
+set /p redemarrer="Voulez-vous redemarrer maintenant ? (O/N) : "
+if /i "%redemarrer%"=="O" (
+    echo.
+    echo Redemarrage dans 10 secondes...
+    echo Appuyez sur Ctrl+C pour annuler
+    shutdown /r /t 10
+    goto FIN
+) else (
+    echo.
+    echo IMPORTANT: Vous DEVEZ redemarrer votre PC
+    echo pour que les changements prennent effet !
+    pause
+    goto FIN
+)
+
+:FIN
+exit /b 0</pre>
+                            <button
+                                onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-3 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                        </div>
+
+                        <div class="bg-surface2 p-4 rounded border border-border space-y-2">
+                            <h4 class="font-bold text-white text-sm">📝 Mode d'emploi</h4>
+                            <ul class="space-y-2 text-sm text-muted">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-accent mt-1">1.</span>
+                                    <span>Créez un fichier texte et nommez-le <code>hyperv_toggle.bat</code>.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-accent mt-1">2.</span>
+                                    <span>Collez le code ci-dessus dedans.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-accent mt-1">3.</span>
+                                    <span>Faites <strong>Clic-Droit > Exécuter en tant qu'administrateur</strong> sur le
+                                        fichier.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <!-- SECTION 1: PREREQUISITES -->
             <section id="prerequisites" class="space-y-8 scroll-mt-24">
