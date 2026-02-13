@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu Desktop sur Windows via VMware</title>
+
+    <!-- TAILWIND CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- TAILWIND CONFIG -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        black: '#000000',
+                        surface: '#080808',
+                        surface2: '#111111',
+                        border: '#1a1a1a',
+                        borderHighlight: '#333333',
+                        text: '#eeeeee',
+                        muted: '#888888',
+
+                        primary: '#ffffff',
+                        accent: '#333333',
+                    },
+                    boxShadow: {
+                        'plate': '0 4px 6px -1px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                        'plate-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)',
+                        'well': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.6)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Selection */
+        ::selection {
+            background: #fff;
+            color: #000;
+        }
+
+        /* Code Block */
+        pre {
+            background: #050505 !important;
+            border: 1px solid #1a1a1a;
+        }
+
+        /* Card / Plate Style */
+        .plate {
+            background: #080808;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .plate:hover {
+            border-color: #333;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Input Well Style */
+        .well {
+            background: #000;
+            border: 1px solid #1a1a1a;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.6);
+            transition: border-color 0.2s;
+        }
+
+        .well:focus {
+            border-color: #fff;
+            outline: none;
+        }
+
+        /* Sidebar Link Active State */
+        .sidebar-link.active {
+            color: #fff;
+            border-left-color: #fff;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-black text-text font-sans antialiased min-h-screen selection:bg-white selection:text-black">
+
+    <!-- MOBILE NAV TOGGLE (Visible on small screens) -->
+    <div
+        class="lg:hidden fixed top-0 left-0 w-full bg-black/90 backdrop-blur z-50 border-b border-border px-6 py-4 flex justify-between items-center">
+        <span class="font-bold text-white">Ubuntu Desktop sur Windows</span>
+        <button id="mobile-menu-btn" class="text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- SIDEBAR NAVIGATION (Fixed on Desktop, Hidden/Modal on Mobile) -->
+    <aside id="sidebar"
+        class="fixed top-0 left-0 h-full w-64 bg-surface border-r border-border z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 overflow-y-auto pt-20 lg:pt-12 pb-12">
+        <div class="px-6 space-y-8">
+            <div class="hidden lg:block">
+                <h1 class="font-bold text-white text-xl tracking-tight">Ubuntu Desktop sur Windows</h1>
+                <div class="text-xs text-muted font-mono mt-1">VMware Guide <span class="current-year"></span></div>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="#header"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Introduction</a>
+
+                <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Installation</div>
+                <a href="#prerequisites"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">01.
+                    Prérequis</a>
+                <a href="#setup"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">02.
+                    Setup</a>
+
+                <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Configuration</div>
+                <a href="#config"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Mise
+                    à jour</a>
+                <a href="#shared-folders"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Dossiers
+                    partagés</a>
+                <a href="#copy-paste"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Copier/Coller</a>
+
+                <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Outils</div>
+                <a href="#packages"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Paquets</a>
+                <a href="#chrome"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Chrome
+                    & Web</a>
+                <a href="#docker"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Docker</a>
+
+                <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Support</div>
+                <a href="#notes"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Notes</a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- OVERLAY for Mobile Menu -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 z-30 hidden lg:hidden backdrop-blur-sm"></div>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="lg:pl-64 min-h-screen transition-all duration-300">
+        <div class="max-w-4xl mx-auto px-6 py-24 lg:py-20 space-y-20">
+
+            <!-- HEADER -->
+            <header id="header" class="text-center space-y-6 pt-10 scroll-mt-32">
+                <h1 class="text-4xl lg:text-5xl font-bold tracking-tight text-white">Ubuntu Desktop sur Windows via
+                    VMware
+                </h1>
+                <div class="w-24 h-1 bg-white mx-auto rounded-full opacity-20"></div>
+            </header>
+
+            <!-- SECTION 1: PREREQUISITES -->
+            <section id="prerequisites" class="space-y-8 scroll-mt-24">
+                <div class="flex items-center gap-4 pb-4 border-b border-border">
+                    <span class="font-mono font-bold text-2xl text-muted">01</span>
+                    <h2 class="text-2xl font-bold text-white">Prérequis Indispensables</h2>
+                </div>
+
+                <div class="plate p-8 rounded-xl space-y-4">
+                    <p class="text-muted">Avant de commencer, assurez-vous de respecter ces conditions :</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                            <span>Être <strong>administrateur</strong> de votre PC.</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                            <span class="leading-relaxed">Avoir activé la <strong>virtualisation</strong> dans le BIOS.
+                                <br><span
+                                    class="text-red-400/80 text-xs font-mono bg-red-900/10 px-2 py-0.5 rounded border border-red-900/20">⚠️
+                                    Obligatoire : risque d'erreurs critiques si désactivé</span></span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SECTION 2: SETUP -->
+            <section id="setup" class="space-y-8 scroll-mt-24">
+                <div class="flex items-center gap-4 pb-4 border-b border-border">
+                    <span class="font-mono font-bold text-2xl text-muted">02</span>
+                    <h2 class="text-2xl font-bold text-white">Installation VMware & Ubuntu</h2>
+                </div>
+
+                <!-- A. VMware Workstation -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">A. Télécharger VMware Workstation</h3>
+                    <div class="plate p-8 rounded-xl space-y-6">
+                        <p class="text-muted">Téléchargez la version gratuite pour usage personnel.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion"
+                                target="_blank"
+                                class="inline-flex items-center justify-center px-6 py-3 bg-white text-black font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                                <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(Site
+                                        Officiel)</span></span>
+                            </a>
+                            <a href="https://www.clubic.com/telecharger-fiche121950-vmware-workstation.html"
+                                target="_blank"
+                                class="inline-flex items-center justify-center px-6 py-3 bg-surface2 text-white font-bold text-sm rounded-lg hover:bg-accent border border-border transition-colors">
+                                <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(via
+                                        Clubic)</span></span>
+                            </a>
+                        </div>
+                        <p class="text-sm text-muted">Lors du lancement, sélectionnez <strong>"Use VMware Workstation
+                                for Personal Use"</strong> pour la version gratuite.</p>
+                    </div>
+                </div>
+
+                <!-- B. Ubuntu ISO -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">B. Télécharger Ubuntu Desktop ISO</h3>
+                    <div class="plate p-8 rounded-xl space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <p class="text-muted">Téléchargez l'image ISO d'Ubuntu Desktop.</p>
+                            <a href="https://ubuntu.com/download/desktop" target="_blank"
+                                class="inline-flex items-center justify-center px-6 py-2.5 bg-white text-black font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                                Télécharger Ubuntu
+                            </a>
+                        </div>
+                        <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg">
+                            <p class="text-sm text-yellow-200/80">⚠️ Attendez sur la page subscription que le
+                                téléchargement commence. <strong>Conservez l'ISO dans un endroit sûr</strong>, ne le
+                                supprimez pas !</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C. Création VM -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">C. Créer la Machine Virtuelle</h3>
+                    <div class="plate p-8 rounded-xl space-y-4">
+                        <ol class="list-decimal list-inside text-sm text-muted space-y-3 marker:text-white">
+                            <li>Lancez <strong>VMware Workstation</strong></li>
+                            <li>Cliquez sur <strong>"Create a New Virtual Machine"</strong></li>
+                            <li>Laissez <strong>"Typical"</strong> sélectionné</li>
+                            <li>Dans "Installer disc image file (iso)", cliquez sur <strong>Browse</strong> et
+                                sélectionnez l'ISO Ubuntu téléchargé</li>
+                            <li>Entrez le <strong>Full name</strong>, <strong>Username</strong> et
+                                <strong>Password</strong> de votre choix pour Ubuntu
+                            </li>
+                            <li>Modifiez le <strong>Virtual machine name</strong> et la <strong>localisation</strong> si
+                                vous le souhaitez</li>
+                            <li>Modifiez le <strong>Maximum disk size</strong> si nécessaire (20GB minimum recommandé)
+                            </li>
+                            <li>Cliquez sur <strong>Finish</strong></li>
+                        </ol>
+                        <p class="text-sm text-muted pt-4">La VM devrait se lancer automatiquement. Attendez qu'Ubuntu
+                            démarre.</p>
+                    </div>
+                </div>
+
+                <!-- D. Configuration Ubuntu -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">D. Configuration Initiale Ubuntu</h3>
+                    <div class="plate p-8 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">Une fenêtre <strong>"Welcome to Ubuntu"</strong> devrait
+                            apparaître :</p>
+                        <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
+                            <li>Configurez la <strong>langue</strong> et la <strong>langue du clavier</strong></li>
+                            <li>Connectez-vous à <strong>Internet</strong> si demandé</li>
+                            <li>Sélectionnez <strong>"Install Ubuntu"</strong></li>
+                            <li>Choisissez <strong>"Interactive Installation"</strong></li>
+                            <li>Sélectionnez <strong>"Default Selection"</strong></li>
+                            <li>Choisissez <strong>"Erase disk and install Ubuntu"</strong></li>
+                            <li>Configurez votre <strong>compte utilisateur</strong> (comme précédemment)</li>
+                            <li>Suivez les étapes restantes</li>
+                        </ol>
+                        <div class="bg-blue-900/20 border border-blue-700/30 p-4 rounded-lg mt-4">
+                            <p class="text-sm text-blue-200/80">ℹ️ L'installation peut prendre du temps, c'est normal !
+                                À la fin, cliquez sur <strong>"Restart now"</strong>.</p>
+                        </div>
+                        <p class="text-sm text-muted pt-4">Au relancement, une fenêtre de configuration s'affichera.
+                            Passez toutes les étapes et connectez-vous !</p>
+                    </div>
+                </div>
+
+                <!-- E. Full Screen -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">E. Activer le Plein Écran</h3>
+                    <div class="plate p-6 rounded-xl">
+                        <p class="text-sm text-muted mb-2">Pour passer en plein écran :</p>
+                        <code
+                            class="block bg-black p-3 rounded text-sm font-mono text-white border border-border">Ctrl + Alt + Entrée</code>
+                        <p class="text-xs text-muted mt-3 italic">Si Ubuntu ne se met pas en plein écran
+                            automatiquement, l'étape suivante (open-vm-tools) résoudra le problème.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: CONFIGURATION -->
+            <section id="post-install" class="space-y-12 scroll-mt-24">
+                <div class="flex items-center gap-4 pb-4 border-b border-border">
+                    <span class="font-mono font-bold text-2xl text-muted">03</span>
+                    <h2 class="text-2xl font-bold text-white">Configuration Post-Installation</h2>
+                </div>
+
+                <!-- CONFIG -->
+                <div id="config" class="plate p-8 rounded-xl border-l-4 border-white scroll-mt-28">
+                    <h3 class="font-bold text-white text-lg mb-4">Mise à jour du système</h3>
+                    <p class="text-muted text-sm mb-4">Ouvrez un terminal dans Ubuntu et exécutez les commandes
+                        suivantes :</p>
+                    <div class="space-y-3">
+                        <div class="relative group">
+                            <pre
+                                class="well p-4 rounded-lg overflow-x-auto text-xs text-muted font-mono leading-relaxed">sudo apt update
+sudo apt upgrade -y
+sudo apt install open-vm-tools open-vm-tools-desktop
+sudo systemctl restart open-vm-tools
+sudo systemctl restart open-vm-tools-desktop
+sudo systemctl restart vmtoolsd</pre>
+                            <button
+                                onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-3 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                        </div>
+                        <p class="text-sm text-muted">Après l'installation, <strong>arrêtez Ubuntu</strong> (shutdown)
+                            avant de passer aux étapes suivantes.</p>
+                    </div>
+                </div>
+
+                <!-- SHARED FOLDERS -->
+                <div id="shared-folders" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">Dossiers Partagés (Windows ↔ Ubuntu)</h3>
+
+                    <div class="plate p-8 rounded-xl space-y-6">
+                        <h4 class="font-bold text-white">Configuration dans VMware (Ubuntu éteint)</h4>
+                        <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
+                            <li>Allez dans <strong>VM → Settings</strong></li>
+                            <li>Dans l'onglet <strong>Options</strong>, sélectionnez <strong>Shared Folders</strong>
+                            </li>
+                            <li>Sélectionnez <strong>Always enabled</strong></li>
+                            <li>Cliquez sur <strong>Add...</strong></li>
+                            <li>Cliquez sur <strong>Browse</strong> et sélectionnez votre disque <code>C:</code> (Ce PC
+                                → Windows (C:))</li>
+                            <li>Passez les étapes suivantes et validez</li>
+                        </ol>
+                        <p class="text-sm text-muted">Vos fichiers Windows seront accessibles dans Ubuntu à
+                            <code>/mnt/hgfs/</code>
+                        </p>
+
+                        <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg mt-4">
+                            <h4 class="font-bold text-yellow-500 mb-2">⚠️ Si /mnt/hgfs n'existe pas ou est vide</h4>
+                            <p class="text-sm text-yellow-200/80 mb-3">Il faut créer le lien manuellement avec systemd :
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 mt-4">
+                            <p class="text-xs font-bold text-muted uppercase">1. Créer le point de montage :</p>
+                            <div class="relative group">
+                                <pre
+                                    class="well p-3 rounded-lg text-xs text-muted font-mono">sudo mkdir -p /mnt/hgfs</pre>
+                                <button
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                            </div>
+
+                            <p class="text-xs font-bold text-muted uppercase mt-4">2. Créer le fichier de service
+                                systemd :</p>
+                            <div class="relative group">
+                                <pre
+                                    class="well p-3 rounded-lg text-xs text-muted font-mono">sudo nano /etc/systemd/system/mnt-hgfs.mount</pre>
+                                <button
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                            </div>
+
+                            <p class="text-xs font-bold text-muted uppercase mt-4">3. Coller ce contenu dans le fichier
+                                :</p>
+                            <div class="relative group">
+                                <pre
+                                    class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed h-48 overflow-y-auto">[Unit]
+Description=VMware HGFS mount
+ConditionPathExists=/mnt/hgfs
+ConditionVirtualization=vmware
+After=open-vm-tools.service
+
+[Mount]
+What=.host:/C
+Where=/mnt/hgfs
+Type=fuse.vmhgfs-fuse
+Options=allow_other,defaults
+
+[Install]
+WantedBy=multi-user.target</pre>
+                                <button
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                            </div>
+                            <p class="text-xs text-muted italic">Sauvegardez avec <kbd
+                                    class="bg-white text-black px-1 rounded">Ctrl+O</kbd>, <kbd
+                                    class="bg-white text-black px-1 rounded">Entrée</kbd>, puis <kbd
+                                    class="bg-white text-black px-1 rounded">Ctrl+X</kbd></p>
+
+                            <p class="text-xs font-bold text-muted uppercase mt-4">4. Activer et démarrer le service :
+                            </p>
+                            <div class="relative group">
+                                <pre class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed">sudo systemctl daemon-reload
+sudo systemctl enable mnt-hgfs.mount
+sudo systemctl start mnt-hgfs.mount</pre>
+                                <button
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                            </div>
+
+                            <p class="text-xs font-bold text-muted uppercase mt-4">5. Vérifier :</p>
+                            <div class="relative group">
+                                <pre class="well p-3 rounded-lg text-xs text-muted font-mono">ls /mnt/hgfs</pre>
+                                <button
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                            </div>
+                            <p class="text-sm text-green-200/80 mt-2">✅ Après ça, ce sera automatique à chaque démarrage
+                                !</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COPY/PASTE -->
+                <div id="copy-paste" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">Copier/Coller & Glisser/Déposer</h3>
+                    <div class="plate p-8 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">Pour activer le copier/coller et le glisser/déposer entre Windows
+                            et Ubuntu :</p>
+                        <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
+                            <li>Allez dans <strong>VM → Settings</strong></li>
+                            <li>Dans l'onglet <strong>Options</strong>, sélectionnez <strong>Guest Isolation</strong>
+                            </li>
+                            <li>Activez <strong>Enable drag and drop</strong></li>
+                            <li>Activez <strong>Enable copy and paste</strong></li>
+                        </ol>
+                        <p class="text-sm text-green-200/80 mt-4">✅ Vous pourrez maintenant glisser/déposer et
+                            copier/coller entre Windows et Ubuntu !</p>
+                    </div>
+                </div>
+
+                <!-- PACKAGES -->
+                <div id="packages" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">Gestion des paquets</h3>
+                    <p class="text-sm text-muted">Sous Linux, on n'installe pas des .exe mais des paquets. Voici comment
+                        faire :</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="plate p-6 rounded-xl">
+                            <h4 class="font-bold text-white mb-2">1. APT (Standard)</h4>
+                            <p class="text-xs text-muted mb-2">Méthode standard (Firefox, VLC...).</p>
+                            <code
+                                class="block bg-black p-2 rounded text-xs font-mono text-muted border border-border">sudo apt update && sudo apt install paquet</code>
+                        </div>
+                        <div class="plate p-6 rounded-xl">
+                            <h4 class="font-bold text-white mb-2">2. Snap (Universel)</h4>
+                            <p class="text-xs text-muted mb-2">Apps packagées avec dépendances.</p>
+                            <code
+                                class="block bg-black p-2 rounded text-xs font-mono text-muted border border-border">sudo snap install paquet</code>
+                        </div>
+                        <div class="plate p-6 rounded-xl">
+                            <h4 class="font-bold text-white mb-2">3. .deb (Debian/Ubuntu)</h4>
+                            <p class="text-xs text-muted mb-2">L'équivalent du .exe.</p>
+                            <code
+                                class="block bg-black p-2 rounded text-xs font-mono text-muted border border-border">sudo apt install ./fichier.deb</code>
+                        </div>
+                        <div class="plate p-6 rounded-xl">
+                            <h4 class="font-bold text-white mb-2">4. .rpm (RedHat)</h4>
+                            <p class="text-xs text-muted mb-2">Nécessite conversion (à éviter).</p>
+                            <div class="space-y-2">
+                                <code
+                                    class="block bg-black p-2 rounded text-xs font-mono text-muted border border-border">sudo apt install alien</code>
+                                <code
+                                    class="block bg-black p-2 rounded text-xs font-mono text-muted border border-border">sudo alien -i paquet.rpm</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHROME -->
+                <div id="chrome" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">Google Chrome & Navigateurs</h3>
+
+                    <div class="bg-yellow-900/10 border border-yellow-700/30 p-6 rounded-lg">
+                        <h4 class="font-bold text-yellow-500 mb-2">⚠️ Note importante sur les navigateurs</h4>
+                        <p class="text-sm text-yellow-200/80 leading-relaxed">
+                            Pour le <strong>rendu visuel</strong> (vidéo, fluidité), il est souvent préférable
+                            d'utiliser votre navigateur Windows.<br>
+                            Cependant, pour le <strong>développement web</strong> (technique), utilisez le navigateur
+                            dans WSL pour éviter les problèmes de réseaux ou de fichiers (ex: CSRF, permissions).
+                        </p>
+                    </div>
+
+                    <div class="plate p-6 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">Installation de Chrome stable dans WSL :</p>
+                        <div class="space-y-2">
+                            <code
+                                class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb</code>
+                            <code
+                                class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">sudo apt install ./google-chrome-stable_current_amd64.deb</code>
+                        </div>
+                        <p class="text-sm text-muted pt-2">Pour lancer Chrome :</p>
+                        <code
+                            class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">google-chrome &</code>
+                    </div>
+
+                    <!-- CHROME FAST DEV -->
+                    <div class="plate p-6 rounded-xl space-y-4 border-l-4 border-blue-500">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-xl">🚀</span>
+                            <h4 class="font-bold text-white">Chrome Fast Dev (Ultra Optimisé)</h4>
+                        </div>
+                        <p class="text-sm text-muted">Version ultra-légère et optimisée pour le <strong>développement
+                                uniquement</strong>. Désactive les services inutiles, le cache agressif, et optimise la
+                            RAM.</p>
+
+                        <div class="bg-surface2 p-4 rounded border border-border space-y-2">
+                            <p class="text-xs text-muted font-bold uppercase">Installation (Copier-coller tout le bloc)
+                                :</p>
+                            <div class="relative group">
+                                <pre
+                                    class="well p-4 rounded-lg overflow-x-auto text-[10px] text-muted font-mono leading-relaxed whitespace-pre-wrap h-64">sudo tee /usr/local/bin/chrome-fast > /dev/null << 'WRAPPER'
+#!/bin/bash
+exec /usr/bin/google-chrome-stable \
+  --disable-background-apps \
+  --disable-background-networking \
+  --disable-background-timer-throttling \
+  --disable-backgrounding-occluded-windows \
+  --disable-breakpad \
+  --disable-client-side-phishing-detection \
+  --disable-component-extensions-with-background-pages \
+  --disable-component-update \
+  --disable-crash-reporter \
+  --disable-default-apps \
+  --disable-dev-shm-usage \
+  --disable-extensions-http-throttling \
+  --disable-hang-monitor \
+  --disable-logging \
+  --disable-renderer-backgrounding \
+  --disable-sync \
+  --disable-translate \
+  --disable-features=TranslateUI,OptimizationHints,MediaRouter,DialMediaRouteProvider,AutofillServerCommunication,CrashReporting,ChromeWhatsNewUI,TabHoverCardImages,ReadingList,LensRegionSearch,InterestFeedContentSuggestions,Translate \
+  --enable-features=ParallelDownloading,TurnOffStreamingMediaCachingAlways \
+  --enable-parallel-downloading \
+  --force-color-profile=srgb \
+  --js-flags="--max-old-space-size=512 --optimize-for-size --gc-interval=100" \
+  --max-tiles-for-interest-area=64 \
+  --memory-model=low \
+  --no-crash-upload \
+  --no-default-browser-check \
+  --no-first-run \
+  --no-pings \
+  --no-service-autorun \
+  --num-raster-threads=2 \
+  --process-per-site \
+  --renderer-process-limit=4 \
+  --disk-cache-size=52428800 \
+  --media-cache-size=52428800 \
+  --aggressive-cache-discard \
+  "$@"
+WRAPPER
+sudo chmod +x /usr/local/bin/chrome-fast && \
+mkdir -p ~/.local/share/applications && \
+cat > ~/.local/share/applications/chrome-fast.desktop << 'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome Fast
+GenericName=Navigateur Web
+Comment=Google Chrome ultra-optimisé
+Exec=/usr/local/bin/chrome-fast --new-window --class=ChromeFast --user-data-dir=/tmp/chrome-fast-profile about:newtab
+Icon=google-chrome
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
+StartupWMClass=ChromeFast
+EOF
+BUREAU=$(xdg-user-dir DESKTOP) && \
+cat > "$BUREAU/ChromeFast.desktop" << 'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome Fast
+GenericName=Navigateur Web
+Comment=Google Chrome ultra-optimisé
+Exec=/usr/local/bin/chrome-fast --new-window --class=ChromeFast --user-data-dir=/tmp/chrome-fast-profile about:newtab
+Icon=google-chrome
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
+StartupWMClass=ChromeFast
+EOF
+chmod +x "$BUREAU/ChromeFast.desktop" && \
+gio set "$BUREAU/ChromeFast.desktop" metadata::trusted true 2>/dev/null && \
+mkdir -p /tmp/chrome-fast-profile && \
+CHROME_DIR="$HOME/.config/google-chrome/Default" && \
+rm -rf "$CHROME_DIR/Cache"/* \
+       "$CHROME_DIR/Code Cache"/* \
+       "$CHROME_DIR/GPUCache"/* \
+       "$CHROME_DIR/ShaderCache"/* \
+       "$CHROME_DIR/DawnCache"/* \
+       "$CHROME_DIR/Service Worker/CacheStorage"/* \
+       "$CHROME_DIR/Service Worker/ScriptCache"/* \
+       "$HOME/.config/google-chrome/ShaderCache"/* \
+       "$HOME/.config/google-chrome/GrShaderCache"/* && \
+systemctl --user stop google-chrome.service 2>/dev/null ; \
+systemctl --user disable google-chrome.service 2>/dev/null ; \
+systemctl --user stop chrome-remote-desktop@$USER.service 2>/dev/null ; \
+systemctl --user disable chrome-remote-desktop@$USER.service 2>/dev/null ; \
+rm -f ~/.config/autostart/google-chrome.desktop 2>/dev/null && \
+PREFS="$CHROME_DIR/Preferences" && \
+if [ -f "$PREFS" ]; then \
+  python3 -c "
+import json
+with open('$PREFS', 'r') as f:
+    p = json.load(f)
+p.setdefault('background_mode', {})['enabled'] = False
+p.setdefault('net', {})['network_prediction_options'] = 2
+p.setdefault('dns_prefetching', {})['enabled'] = False
+p.setdefault('browser', {})['check_default_browser'] = False
+p.setdefault('spellcheck', {})['use_spelling_service'] = False
+with open('$PREFS', 'w') as f:
+    json.dump(p, f, indent=2)
+" 2>/dev/null ; \
+fi && \
+update-desktop-database ~/.local/share/applications/ 2>/dev/null && \
+kbuildsycoca5 --noincremental 2>/dev/null && \
+echo "✅ Chrome Fast installé. Raccourci bureau créé."</pre>
+                                <button
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-3 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-muted italic">💡 <strong>Astuce :</strong> Lancez-le depuis le bureau
+                            KDE, puis faites clic-droit dans la barre des tâches → "Épingler" pour l'avoir toujours sous
+                            la main.</p>
+                    </div>
+                </div>
+
+                <!-- DOCKER -->
+                <div id="docker" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">🐳 Docker Desktop</h3>
+                    <div class="plate p-6 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">Si vous utilisez Docker Desktop, voici comment le configurer
+                            correctement.</p>
+
+                        <div class="space-y-4 text-sm">
+                            <div class="pt-4 border-t border-border mt-4">
+                                <h4 class="text-white font-bold text-xs uppercase mb-3">Utiliser Docker sans sudo</h4>
+                                <p class="text-muted text-xs mb-2">Pour utiliser Docker sans <code>sudo</code>, ajoutez
+                                    votre utilisateur au groupe docker :</p>
+                                <div class="relative group">
+                                    <pre class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed">sudo groupadd docker
+sudo usermod -aG docker $USER</pre>
+                                    <button
+                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                        class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                </div>
+                                <p class="text-muted text-xs mt-2">Ensuite, <strong>redémarrez Ubuntu</strong> pour que
+                                    les changements prennent effet :</p>
+                                <div class="relative group mt-2">
+                                    <pre class="well p-3 rounded-lg text-xs text-muted font-mono">reboot</pre>
+                                    <button
+                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                        class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-border mt-4">
+                                <h4 class="text-white font-bold text-xs uppercase mb-3">Configurer le contexte Docker
+                                </h4>
+                                <p class="text-muted text-xs mb-2">Dans votre <code>~/.bashrc</code>, ajoutez cette
+                                    ligne pour utiliser le contexte par défaut :</p>
+                                <div class="relative group">
+                                    <pre
+                                        class="well p-3 rounded-lg text-xs text-muted font-mono">echo 'docker context use default' >> ~/.bashrc</pre>
+                                    <button
+                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                        class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                </div>
+                                <p class="text-muted text-xs mt-2">Puis rechargez le fichier :</p>
+                                <div class="relative group mt-2">
+                                    <pre class="well p-3 rounded-lg text-xs text-muted font-mono">source ~/.bashrc</pre>
+                                    <button
+                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                        class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </section>
+
+            <!-- SECTION 4: NOTES -->
+            <section id="notes" class="space-y-8 pb-20 scroll-mt-24">
+                <div class="flex items-center gap-4 pb-4 border-b border-border">
+                    <span class="font-mono font-bold text-2xl text-muted">04</span>
+                    <h2 class="text-2xl font-bold text-white">Notes Importantes</h2>
+                </div>
+
+                <!-- SUSPEND VM WARNING -->
+                <div class="plate p-6 rounded-xl border-l-4 border-red-500">
+                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                        <span class="text-red-500">⚠️</span>
+                        Suspendre la VM avant la mise en veille du PC
+                    </h4>
+                    <p class="text-sm text-muted leading-relaxed">
+                        <strong>Important :</strong> Suspendez toujours la VM avant de mettre votre PC en veille. Si
+                        vous ne le faites pas, lors de la reconnexion vous aurez un écran noir et il faudra redémarrer
+                        Ubuntu.
+                    </p>
+                    <p class="text-xs text-muted mt-3 italic">
+                        💡 Pour suspendre : <strong>VM → Power → Suspend Guest</strong>
+                    </p>
+                </div>
+            </section>
+
+            <footer class="border-t border-border py-12 text-center text-xs text-muted font-mono">
+                UBUNTU DESKTOP SUR WINDOWS VIA VMWARE // <span class="current-year"></span> EDITION // <span
+                    id="full-date"></span>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        // SIDEBAR & MOBILE MENU LOGIC
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function toggleMenu() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        // Sidebar Active State on Scroll
+        const sections = document.querySelectorAll('section, div[id]');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // DYNAMIC DATES
+        const now = new Date();
+        document.querySelectorAll('.current-year').forEach(el => {
+            el.textContent = now.getFullYear();
+        });
+
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const fullDateStr = now.toLocaleDateString('fr-FR', dateOptions);
+        const fullDateEl = document.getElementById('full-date');
+        if (fullDateEl) fullDateEl.textContent = fullDateStr.charAt(0).toUpperCase() + fullDateStr.slice(1);
+    </script>
+</body>
+
+</html>
