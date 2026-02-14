@@ -708,9 +708,33 @@ fi
                         <h4 class="font-bold text-white text-lg">📌 PARTIE 2 : Configuration dans Ubuntu (après
                             démarrage)</h4>
 
+                        <div class="space-y-4">
+                            <p class="text-xs font-bold text-muted uppercase">Étape 1 : Vérification du montage
+                                automatique</p>
+                            <p class="text-sm text-muted">Avant de configurer manuellement, vérifiez si le dossier
+                                partagé a été monté automatiquement :</p>
+                            <div class="relative group">
+                                <pre class="well p-3 rounded-lg text-xs text-muted font-mono">ls /mnt/hgfs</pre>
+                                <button
+                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                            </div>
+                            <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg">
+                                <p class="text-sm text-yellow-200/80">
+                                    <strong>✓ Si vous voyez les dossiers enfants de "C"</strong> : Le montage
+                                    automatique a
+                                    fonctionné ! Vous pouvez ignorer l'étape 2 ci-dessous.<br>
+                                    <strong>✗ Si vous obtenez une erreur ou un dossier vide</strong> : Passez à l'étape
+                                    2 pour la configuration manuelle.
+                                </p>
+                            </div>
+                        </div>
+
                         <div class="space-y-3">
-                            <p class="text-xs font-bold text-muted uppercase">Configuration complète en une seule
-                                commande :</p>
+                            <p class="text-xs font-bold text-muted uppercase">Étape 2 : Configuration manuelle (si
+                                nécessaire)</p>
+                            <p class="text-sm text-muted">Si l'étape 1 n'a pas fonctionné, exécutez cette commande
+                                complète :</p>
                             <div class="relative group">
                                 <pre
                                     class="well p-3 rounded-lg text-xs text-muted w-full text-left font-mono break-all whitespace-pre-wrap">sudo systemctl stop mnt-hgfs.mount 2>/dev/null && sudo systemctl stop mnt-hgfs.automount 2>/dev/null && sudo systemctl disable mnt-hgfs.mount 2>/dev/null && sudo systemctl disable mnt-hgfs.automount 2>/dev/null && sudo rm -f /etc/systemd/system/mnt-hgfs.mount && sudo rm -f /etc/systemd/system/mnt-hgfs.automount && sudo mkdir -p /mnt/hgfs && cat <<'EOF' | sudo tee /etc/systemd/system/mnt-hgfs.mount
