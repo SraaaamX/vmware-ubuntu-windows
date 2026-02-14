@@ -151,25 +151,25 @@
                     class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Introduction</a>
 
                 <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Installation</div>
-                <a href="#virtualization"
-                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">00.
-                    Virtualisation</a>
                 <a href="#prerequisites"
                     class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">01.
                     Prérequis</a>
                 <a href="#setup"
                     class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">02.
                     Setup</a>
+                <a href="#virtualization"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">03.
+                    Virtualisation</a>
 
                 <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Configuration</div>
                 <a href="#config"
                     class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Mise
                     à jour</a>
+                <a href="#copy-paste"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Copier/Coller</a>
                 <a href="#shared-folders"
                     class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Dossiers
                     partagés</a>
-                <a href="#copy-paste"
-                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Copier/Coller</a>
 
                 <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Outils</div>
                 <a href="#packages"
@@ -202,10 +202,149 @@
                 <div class="w-24 h-1 bg-white mx-auto rounded-full opacity-20"></div>
             </header>
 
-            <!-- SECTION 0: VIRTUALIZATION -->
+
+
+            <!-- SECTION 1: PREREQUISITES -->
+            <section id="prerequisites" class="space-y-8 scroll-mt-24">
+                <div class="flex items-center gap-4 pb-4 border-b border-border">
+                    <span class="font-mono font-bold text-2xl text-muted">01</span>
+                    <h2 class="text-2xl font-bold text-white">Prérequis Indispensables</h2>
+                </div>
+
+                <div class="plate p-8 rounded-xl space-y-4">
+                    <p class="text-muted">Avant de commencer, assurez-vous de respecter ces conditions :</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                            <span>Être <strong>administrateur</strong> de votre PC.</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                            <span class="leading-relaxed">Avoir activé la <strong>virtualisation</strong> dans le BIOS.
+                                <br><span
+                                    class="text-red-400/80 text-xs font-mono bg-red-900/10 px-2 py-0.5 rounded border border-red-900/20">⚠️
+                                    Obligatoire : risque d'erreurs critiques si désactivé</span></span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SECTION 2: SETUP -->
+            <section id="setup" class="space-y-8 scroll-mt-24">
+                <div class="flex items-center gap-4 pb-4 border-b border-border">
+                    <span class="font-mono font-bold text-2xl text-muted">02</span>
+                    <h2 class="text-2xl font-bold text-white">Installation VMware & Ubuntu</h2>
+                </div>
+
+                <!-- A. VMware Workstation -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">A. Télécharger VMware Workstation</h3>
+                    <div class="plate p-8 rounded-xl space-y-6">
+                        <p class="text-muted">Téléchargez la version gratuite pour usage personnel.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion"
+                                target="_blank"
+                                class="inline-flex items-center justify-center px-6 py-3 bg-white text-black font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                                <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(Site
+                                        Officiel)</span></span>
+                            </a>
+                            <a href="https://www.clubic.com/telecharger-fiche121950-vmware-workstation.html"
+                                target="_blank"
+                                class="inline-flex items-center justify-center px-6 py-3 bg-surface2 text-white font-bold text-sm rounded-lg hover:bg-accent border border-border transition-colors">
+                                <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(via
+                                        Clubic)</span></span>
+                            </a>
+                        </div>
+                        <p class="text-sm text-muted">Lors du lancement, sélectionnez <strong>"Use VMware Workstation
+                                for Personal Use"</strong> pour la version gratuite.</p>
+                    </div>
+                </div>
+
+                <!-- B. Ubuntu ISO -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">B. Télécharger Ubuntu Desktop ISO</h3>
+                    <div class="plate p-8 rounded-xl space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <p class="text-muted">Téléchargez l'image ISO d'Ubuntu Desktop.</p>
+                            <a href="https://ubuntu.com/download/desktop" target="_blank"
+                                class="inline-flex items-center justify-center px-6 py-2.5 bg-white text-black font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                                Télécharger Ubuntu
+                            </a>
+                        </div>
+                        <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg">
+                            <p class="text-sm text-yellow-200/80">⚠️ Attendez sur la page subscription que le
+                                téléchargement commence.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C. Création VM -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">C. Créer la Machine Virtuelle</h3>
+                    <div class="plate p-8 rounded-xl space-y-4">
+                        <ol class="list-decimal list-inside text-sm text-muted space-y-3 marker:text-white">
+                            <li>Lancez <strong>VMware Workstation</strong></li>
+                            <li>Cliquez sur <strong>"Create a New Virtual Machine"</strong></li>
+                            <li>Laissez <strong>"Typical"</strong> sélectionné</li>
+                            <li>Dans "Installer disc image file (iso)", cliquez sur <strong>Browse</strong> et
+                                sélectionnez l'ISO Ubuntu téléchargé</li>
+                            <li>Entrez le <strong>Full name</strong>, <strong>Username</strong> et
+                                <strong>Password</strong> de votre choix pour Ubuntu
+                            </li>
+                            <li>Modifiez le <strong>Virtual machine name</strong> et la <strong>localisation</strong> si
+                                vous le souhaitez</li>
+                            <li>Modifiez le <strong>Maximum disk size</strong> si nécessaire (20GB minimum recommandé)
+                            </li>
+                            <li>Cliquez sur <strong>Finish</strong></li>
+                        </ol>
+                        <p class="text-sm text-muted pt-4">La VM devrait se lancer automatiquement. Attendez qu'Ubuntu
+                            démarre.</p>
+                    </div>
+                </div>
+
+                <!-- D. Configuration Ubuntu -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">D. Configuration Initiale Ubuntu</h3>
+                    <div class="plate p-8 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">Une fenêtre <strong>"Welcome to Ubuntu"</strong> devrait
+                            apparaître :</p>
+                        <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
+                            <li>Configurez la <strong>langue</strong> et la <strong>langue du clavier</strong></li>
+                            <li>Connectez-vous à <strong>Internet</strong> si demandé</li>
+                            <li>Sélectionnez <strong>"Install Ubuntu"</strong></li>
+                            <li>Choisissez <strong>"Interactive Installation"</strong></li>
+                            <li>Sélectionnez <strong>"Default Selection"</strong></li>
+                            <li>Choisissez <strong>"Erase disk and install Ubuntu"</strong></li>
+                            <li>Configurez votre <strong>compte utilisateur</strong> (comme précédemment)</li>
+                            <li>Suivez les étapes restantes</li>
+                        </ol>
+                        <div class="bg-blue-900/20 border border-blue-700/30 p-4 rounded-lg mt-4">
+                            <p class="text-sm text-blue-200/80">ℹ️ L'installation peut prendre du temps, c'est normal !
+                                À la fin, cliquez sur <strong>"Restart now"</strong>.</p>
+                        </div>
+                        <p class="text-sm text-muted pt-4">Au relancement, une fenêtre de configuration s'affichera.
+                            Passez toutes les étapes et connectez-vous !</p>
+                    </div>
+                </div>
+
+                <!-- E. Full Screen -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">E. Activer le Plein Écran</h3>
+                    <div class="plate p-6 rounded-xl">
+                        <p class="text-sm text-muted mb-2">Pour passer en plein écran :</p>
+                        <code
+                            class="block bg-black p-3 rounded text-sm font-mono text-white border border-border">Ctrl + Alt + Entrée</code>
+                        <p class="text-xs text-muted mt-3 italic">Si Ubuntu ne se met pas en plein écran
+                            automatiquement, l'étape suivante (open-vm-tools) résoudra le problème.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: VIRTUALIZATION -->
             <section id="virtualization" class="space-y-8 scroll-mt-24">
                 <div class="flex items-center gap-4 pb-4 border-b border-border">
-                    <span class="font-mono font-bold text-2xl text-muted">00</span>
+                    <span class="font-mono font-bold text-2xl text-muted">03</span>
                     <h2 class="text-2xl font-bold text-white">Virtualisation & Hyper-V</h2>
                 </div>
 
@@ -476,166 +615,27 @@ exit /b 0</pre>
                 </div>
             </section>
 
-            <!-- SECTION 1: PREREQUISITES -->
-            <section id="prerequisites" class="space-y-8 scroll-mt-24">
-                <div class="flex items-center gap-4 pb-4 border-b border-border">
-                    <span class="font-mono font-bold text-2xl text-muted">01</span>
-                    <h2 class="text-2xl font-bold text-white">Prérequis Indispensables</h2>
-                </div>
-
-                <div class="plate p-8 rounded-xl space-y-4">
-                    <p class="text-muted">Avant de commencer, assurez-vous de respecter ces conditions :</p>
-                    <ul class="space-y-2">
-                        <li class="flex items-center gap-3">
-                            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
-                            <span>Être <strong>administrateur</strong> de votre PC.</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
-                            <span class="leading-relaxed">Avoir activé la <strong>virtualisation</strong> dans le BIOS.
-                                <br><span
-                                    class="text-red-400/80 text-xs font-mono bg-red-900/10 px-2 py-0.5 rounded border border-red-900/20">⚠️
-                                    Obligatoire : risque d'erreurs critiques si désactivé</span></span>
-                        </li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- SECTION 2: SETUP -->
-            <section id="setup" class="space-y-8 scroll-mt-24">
-                <div class="flex items-center gap-4 pb-4 border-b border-border">
-                    <span class="font-mono font-bold text-2xl text-muted">02</span>
-                    <h2 class="text-2xl font-bold text-white">Installation VMware & Ubuntu</h2>
-                </div>
-
-                <!-- A. VMware Workstation -->
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-white">A. Télécharger VMware Workstation</h3>
-                    <div class="plate p-8 rounded-xl space-y-6">
-                        <p class="text-muted">Téléchargez la version gratuite pour usage personnel.</p>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion"
-                                target="_blank"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-white text-black font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors">
-                                <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(Site
-                                        Officiel)</span></span>
-                            </a>
-                            <a href="https://www.clubic.com/telecharger-fiche121950-vmware-workstation.html"
-                                target="_blank"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-surface2 text-white font-bold text-sm rounded-lg hover:bg-accent border border-border transition-colors">
-                                <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(via
-                                        Clubic)</span></span>
-                            </a>
-                        </div>
-                        <p class="text-sm text-muted">Lors du lancement, sélectionnez <strong>"Use VMware Workstation
-                                for Personal Use"</strong> pour la version gratuite.</p>
-                    </div>
-                </div>
-
-                <!-- B. Ubuntu ISO -->
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-white">B. Télécharger Ubuntu Desktop ISO</h3>
-                    <div class="plate p-8 rounded-xl space-y-6">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <p class="text-muted">Téléchargez l'image ISO d'Ubuntu Desktop.</p>
-                            <a href="https://ubuntu.com/download/desktop" target="_blank"
-                                class="inline-flex items-center justify-center px-6 py-2.5 bg-white text-black font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors">
-                                Télécharger Ubuntu
-                            </a>
-                        </div>
-                        <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg">
-                            <p class="text-sm text-yellow-200/80">⚠️ Attendez sur la page subscription que le
-                                téléchargement commence.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- C. Création VM -->
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-white">C. Créer la Machine Virtuelle</h3>
-                    <div class="plate p-8 rounded-xl space-y-4">
-                        <ol class="list-decimal list-inside text-sm text-muted space-y-3 marker:text-white">
-                            <li>Lancez <strong>VMware Workstation</strong></li>
-                            <li>Cliquez sur <strong>"Create a New Virtual Machine"</strong></li>
-                            <li>Laissez <strong>"Typical"</strong> sélectionné</li>
-                            <li>Dans "Installer disc image file (iso)", cliquez sur <strong>Browse</strong> et
-                                sélectionnez l'ISO Ubuntu téléchargé</li>
-                            <li>Entrez le <strong>Full name</strong>, <strong>Username</strong> et
-                                <strong>Password</strong> de votre choix pour Ubuntu
-                            </li>
-                            <li>Modifiez le <strong>Virtual machine name</strong> et la <strong>localisation</strong> si
-                                vous le souhaitez</li>
-                            <li>Modifiez le <strong>Maximum disk size</strong> si nécessaire (20GB minimum recommandé)
-                            </li>
-                            <li>Cliquez sur <strong>Finish</strong></li>
-                        </ol>
-                        <p class="text-sm text-muted pt-4">La VM devrait se lancer automatiquement. Attendez qu'Ubuntu
-                            démarre.</p>
-                    </div>
-                </div>
-
-                <!-- D. Configuration Ubuntu -->
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-white">D. Configuration Initiale Ubuntu</h3>
-                    <div class="plate p-8 rounded-xl space-y-4">
-                        <p class="text-sm text-muted">Une fenêtre <strong>"Welcome to Ubuntu"</strong> devrait
-                            apparaître :</p>
-                        <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
-                            <li>Configurez la <strong>langue</strong> et la <strong>langue du clavier</strong></li>
-                            <li>Connectez-vous à <strong>Internet</strong> si demandé</li>
-                            <li>Sélectionnez <strong>"Install Ubuntu"</strong></li>
-                            <li>Choisissez <strong>"Interactive Installation"</strong></li>
-                            <li>Sélectionnez <strong>"Default Selection"</strong></li>
-                            <li>Choisissez <strong>"Erase disk and install Ubuntu"</strong></li>
-                            <li>Configurez votre <strong>compte utilisateur</strong> (comme précédemment)</li>
-                            <li>Suivez les étapes restantes</li>
-                        </ol>
-                        <div class="bg-blue-900/20 border border-blue-700/30 p-4 rounded-lg mt-4">
-                            <p class="text-sm text-blue-200/80">ℹ️ L'installation peut prendre du temps, c'est normal !
-                                À la fin, cliquez sur <strong>"Restart now"</strong>.</p>
-                        </div>
-                        <p class="text-sm text-muted pt-4">Au relancement, une fenêtre de configuration s'affichera.
-                            Passez toutes les étapes et connectez-vous !</p>
-                    </div>
-                </div>
-
-                <!-- E. Full Screen -->
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-white">E. Activer le Plein Écran</h3>
-                    <div class="plate p-6 rounded-xl">
-                        <p class="text-sm text-muted mb-2">Pour passer en plein écran :</p>
-                        <code
-                            class="block bg-black p-3 rounded text-sm font-mono text-white border border-border">Ctrl + Alt + Entrée</code>
-                        <p class="text-xs text-muted mt-3 italic">Si Ubuntu ne se met pas en plein écran
-                            automatiquement, l'étape suivante (open-vm-tools) résoudra le problème.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 3: CONFIGURATION -->
+            <!-- SECTION 4: CONFIGURATION -->
             <section id="post-install" class="space-y-12 scroll-mt-24">
                 <div class="flex items-center gap-4 pb-4 border-b border-border">
-                    <span class="font-mono font-bold text-2xl text-muted">03</span>
+                    <span class="font-mono font-bold text-2xl text-muted">04</span>
                     <h2 class="text-2xl font-bold text-white">Configuration Post-Installation</h2>
                 </div>
 
                 <!-- CONFIG -->
                 <div id="config" class="plate p-8 rounded-xl border-l-4 border-white scroll-mt-28">
                     <h3 class="font-bold text-white text-lg mb-4">Mise à jour du système</h3>
-                    <p class="text-muted text-sm mb-4">Ouvrez un terminal dans Ubuntu et exécutez les commandes
-                        suivantes :</p>
+                    <p class="text-muted text-sm mb-4">Ouvrez un terminal dans Ubuntu et <strong>entrez les commandes
+                            ci-dessous une par une</strong> :</p>
                     <div class="space-y-3">
                         <div class="relative group">
                             <pre
                                 class="well p-4 rounded-lg overflow-x-auto text-xs text-muted font-mono leading-relaxed">sudo apt update
 sudo apt upgrade -y
-sudo apt install open-vm-tools open-vm-tools-desktop
-sudo systemctl restart open-vm-tools
-sudo systemctl restart open-vm-tools-desktop
-sudo systemctl restart vmtoolsd
-sudo systemctl enable open-vm-tools.service
-sudo systemctl enable open-vm-tools-desktop.service
+sudo apt install open-vm-tools open-vm-tools-desktop -y
+sudo systemctl enable open-vm-tools
+sudo systemctl start open-vm-tools
+sudo systemctl start vmtoolsd
 </pre>
                             <button
                                 onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
@@ -675,6 +675,24 @@ fi
                                 class="bg-white text-black px-1 rounded">Ctrl+O</kbd>, <kbd
                                 class="bg-white text-black px-1 rounded">Entrée</kbd>, puis <kbd
                                 class="bg-white text-black px-1 rounded">Ctrl+X</kbd></p>
+                    </div>
+                </div>
+
+                <!-- COPY/PASTE -->
+                <div id="copy-paste" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">Copier/Coller & Glisser/Déposer</h3>
+                    <div class="plate p-8 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">Pour activer le copier/coller et le glisser/déposer entre Windows
+                            et Ubuntu :</p>
+                        <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
+                            <li>Allez dans <strong>VM → Settings</strong></li>
+                            <li>Dans l'onglet <strong>Options</strong>, sélectionnez <strong>Guest Isolation</strong>
+                            </li>
+                            <li>Activez <strong>Enable drag and drop</strong></li>
+                            <li>Activez <strong>Enable copy and paste</strong></li>
+                        </ol>
+                        <p class="text-sm text-green-200/80 mt-4">✅ Vous pourrez maintenant glisser/déposer et
+                            copier/coller entre Windows et Ubuntu !</p>
                     </div>
                 </div>
 
@@ -730,71 +748,47 @@ fi
                             </div>
                         </div>
 
+
                         <div class="space-y-3">
                             <p class="text-xs font-bold text-muted uppercase">Étape 2 : Configuration manuelle (si
                                 nécessaire)</p>
-                            <p class="text-sm text-muted">Si l'étape 1 n'a pas fonctionné, exécutez cette commande
-                                complète :</p>
+                            <p class="text-sm text-muted">Si l'étape 1 n'a pas fonctionné, exécutez cette commande :</p>
                             <div class="relative group">
                                 <pre
-                                    class="well p-3 rounded-lg text-xs text-muted w-full text-left font-mono break-all whitespace-pre-wrap">sudo systemctl stop mnt-hgfs.mount 2>/dev/null && sudo systemctl stop mnt-hgfs.automount 2>/dev/null && sudo systemctl disable mnt-hgfs.mount 2>/dev/null && sudo systemctl disable mnt-hgfs.automount 2>/dev/null && sudo rm -f /etc/systemd/system/mnt-hgfs.mount && sudo rm -f /etc/systemd/system/mnt-hgfs.automount && sudo mkdir -p /mnt/hgfs && cat <<'EOF' | sudo tee /etc/systemd/system/mnt-hgfs.mount
-[Unit]
-Description=VMware HGFS mount
-ConditionPathExists=/mnt/hgfs
-ConditionVirtualization=vmware
-After=network-online.target open-vm-tools.service
-Wants=network-online.target
-Requires=open-vm-tools.service
-
-[Mount]
-What=.host:/C
-Where=/mnt/hgfs
-Type=fuse.vmhgfs-fuse
-Options=allow_other,defaults,uid=1000,gid=1000
-
-[Install]
-WantedBy=multi-user.target
-EOF
-cat <<'EOF' | sudo tee /etc/systemd/system/mnt-hgfs.automount
-[Unit]
-Description=VMware HGFS automount
-ConditionVirtualization=vmware
-After=open-vm-tools.service
-
-[Automount]
-Where=/mnt/hgfs
-TimeoutIdleSec=0
-
-[Install]
-WantedBy=multi-user.target
-EOF
-sudo systemctl daemon-reload && sudo systemctl enable mnt-hgfs.automount && sudo systemctl start mnt-hgfs.automount && ls /mnt/hgfs</pre>
+                                    class="well p-3 rounded-lg text-xs text-muted font-mono">sudo mkdir -p /mnt/hgfs && sudo reboot</pre>
                                 <button
                                     onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
                                     class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
                             </div>
-                            <p class="text-sm text-green-200/80 mt-2">✅ Après ça, ce sera automatique à chaque démarrage
-                                !</p>
+
+                            <div class="bg-blue-900/20 border border-blue-700/30 p-4 rounded-lg mt-3">
+                                <p class="text-sm text-blue-200/80 font-bold mb-2">Vérification après redémarrage :</p>
+                                <div class="relative group">
+                                    <pre class="well p-2 rounded text-xs text-muted font-mono">ls /mnt/hgfs</pre>
+                                    <button
+                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                        class="absolute top-1 right-1 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg mt-3">
+                                <p class="text-sm text-yellow-200/80 font-bold mb-2">Si ça ne fonctionne toujours pas
+                                    automatiquement :</p>
+                                <p class="text-xs text-yellow-200/70 mb-2">Certaines versions d'Ubuntu nécessitent de
+                                    monter manuellement une fois, puis ça fonctionne automatiquement. Ajoutez cette
+                                    ligne dans votre fichier /etc/fstab :</p>
+                                <div class="relative group">
+                                    <pre
+                                        class="well p-3 rounded-lg text-xs text-muted font-mono break-all whitespace-pre-wrap">echo ".host:/ /mnt/hgfs fuse.vmhgfs-fuse allow_other,defaults 0 0" | sudo tee -a /etc/fstab && sudo reboot</pre>
+                                    <button
+                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                        class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                </div>
+                                <p class="text-xs text-yellow-200/70 mt-2 italic">Cette méthode utilise /etc/fstab
+                                    (méthode Linux standard) au lieu de systemd, et VMware Tools se chargera du montage
+                                    automatiquement au démarrage.</p>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-
-                <!-- COPY/PASTE -->
-                <div id="copy-paste" class="space-y-4 scroll-mt-28">
-                    <h3 class="text-xl font-bold text-white">Copier/Coller & Glisser/Déposer</h3>
-                    <div class="plate p-8 rounded-xl space-y-4">
-                        <p class="text-sm text-muted">Pour activer le copier/coller et le glisser/déposer entre Windows
-                            et Ubuntu :</p>
-                        <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
-                            <li>Allez dans <strong>VM → Settings</strong></li>
-                            <li>Dans l'onglet <strong>Options</strong>, sélectionnez <strong>Guest Isolation</strong>
-                            </li>
-                            <li>Activez <strong>Enable drag and drop</strong></li>
-                            <li>Activez <strong>Enable copy and paste</strong></li>
-                        </ol>
-                        <p class="text-sm text-green-200/80 mt-4">✅ Vous pourrez maintenant glisser/déposer et
-                            copier/coller entre Windows et Ubuntu !</p>
                     </div>
                 </div>
 
