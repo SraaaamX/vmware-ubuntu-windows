@@ -12,4 +12,4 @@ Tout le projet (guide complet + astuces post-installation) est regroupé dans un
    - Guide d'installation de paquets et Chrome (Chrome Fast)
    - Configuration Docker Desktop
 
-C'est tout ! L'interface web contient toute la documentation et les commandes nécessaires pour configurer rapidement votre environnement Ubuntu dans VMware.# vmware-ubuntu-windows
+C'est tout ! L'interface web contient toute la documentation et les commandes nécessaires pour configurer rapidement votre environnement Ubuntu dans VMware.

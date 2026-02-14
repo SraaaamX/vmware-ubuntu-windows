@@ -633,13 +633,48 @@ sudo apt upgrade -y
 sudo apt install open-vm-tools open-vm-tools-desktop
 sudo systemctl restart open-vm-tools
 sudo systemctl restart open-vm-tools-desktop
-sudo systemctl restart vmtoolsd</pre>
+sudo systemctl restart vmtoolsd
+sudo systemctl enable open-vm-tools.service
+sudo systemctl enable open-vm-tools-desktop.service
+</pre>
                             <button
                                 onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
                                 class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-3 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
                         </div>
-                        <p class="text-sm text-muted">Après l'installation, <strong>arrêtez Ubuntu</strong> (shutdown)
+                        <p class="text-sm text-muted">Après l'installation, <strong>redémarrez la VM</strong>
                             avant de passer aux étapes suivantes.</p>
+                    </div>
+                </div>
+
+                <!-- BASH PROFILE -->
+                <div id="bash-profile" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">🧰 Configuration du Profil Bash</h3>
+                    <div class="plate p-6 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">
+                            Pour s'assurer que votre configuration (y compris Docker) soit toujours chargée, éditez
+                            votre fichier <code>.bash_profile</code> :
+                        </p>
+                        <div class="relative group">
+                            <pre class="well p-3 rounded-lg text-xs text-muted font-mono">nano ~/.bash_profile</pre>
+                            <button
+                                onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                        </div>
+                        <p class="text-sm text-muted mt-4">Ajoutez ceci à la fin du fichier :</p>
+                        <div class="relative group">
+                            <pre class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed">
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+                            </pre>
+                            <button
+                                onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                        </div>
+                        <p class="text-xs text-muted italic mt-2">Sauvegardez avec <kbd
+                                class="bg-white text-black px-1 rounded">Ctrl+O</kbd>, <kbd
+                                class="bg-white text-black px-1 rounded">Entrée</kbd>, puis <kbd
+                                class="bg-white text-black px-1 rounded">Ctrl+X</kbd></p>
                     </div>
                 </div>
 
@@ -648,88 +683,68 @@ sudo systemctl restart vmtoolsd</pre>
                     <h3 class="text-xl font-bold text-white">Dossiers Partagés (Windows ↔ Ubuntu)</h3>
 
                     <div class="plate p-8 rounded-xl space-y-6">
-                        <h4 class="font-bold text-white">Configuration dans VMware (Ubuntu éteint)</h4>
+                        <h4 class="font-bold text-white text-lg">📌 PARTIE 1 : Configuration dans VMware (Ubuntu éteint)
+                        </h4>
                         <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
-                            <li>Allez dans <strong>VM → Settings</strong></li>
-                            <li>Dans l'onglet <strong>Options</strong>, sélectionnez <strong>Shared Folders</strong>
-                            </li>
-                            <li>Sélectionnez <strong>Always enabled</strong></li>
+                            <li><strong>Éteignez complètement Ubuntu</strong></li>
+                            <li>Clic droit sur votre VM Ubuntu → <strong>Settings</strong></li>
+                            <li>Onglet <strong>Options</strong> → <strong>Shared Folders</strong></li>
+                            <li>Sélectionnez <strong>Always enabled</strong> (pas "Enabled until next power off")</li>
                             <li>Cliquez sur <strong>Add...</strong></li>
-                            <li>Cliquez sur <strong>Browse</strong> et sélectionnez votre disque <code>C:</code> (Ce PC
-                                → Windows (C:))</li>
-                            <li>Passez les étapes suivantes et validez</li>
+                            <li><strong>Host path</strong> : Cliquez sur Browse et sélectionnez <code>C:\</code></li>
+                            <li><strong>Name</strong> : Tapez exactement <code>C</code> (majuscule, important !)</li>
+                            <li>✅ Cochez <strong>Enable this share</strong></li>
+                            <li>✅ Cochez <strong>Read-only</strong> si vous voulez juste lire (optionnel)</li>
+                            <li>Cliquez sur <strong>Next</strong> puis <strong>Finish</strong></li>
                         </ol>
-                        <p class="text-sm text-muted">Vos fichiers Windows seront accessibles dans Ubuntu à
-                            <code>/mnt/hgfs/</code>
-                        </p>
-
-                        <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg mt-4">
-                            <h4 class="font-bold text-yellow-500 mb-2">⚠️ Si /mnt/hgfs n'existe pas ou est vide</h4>
-                            <p class="text-sm text-yellow-200/80 mb-3">Il faut créer le lien manuellement avec systemd :
+                        <div class="bg-blue-900/20 border border-blue-700/30 p-4 rounded-lg mt-4">
+                            <p class="text-sm text-blue-200/80">ℹ️ Vérifiez que le dossier partagé apparaît comme :
+                                <strong>C → C:\</strong> et que <strong>Always enabled</strong> est bien sélectionné.
                             </p>
                         </div>
+                    </div>
 
-                        <div class="space-y-3 mt-4">
-                            <p class="text-xs font-bold text-muted uppercase">1. Créer le point de montage :</p>
+                    <div class="plate p-8 rounded-xl space-y-6 mt-6">
+                        <h4 class="font-bold text-white text-lg">📌 PARTIE 2 : Configuration dans Ubuntu (après
+                            démarrage)</h4>
+
+                        <div class="space-y-3">
+                            <p class="text-xs font-bold text-muted uppercase">Configuration complète en une seule
+                                commande :</p>
                             <div class="relative group">
                                 <pre
-                                    class="well p-3 rounded-lg text-xs text-muted font-mono">sudo mkdir -p /mnt/hgfs</pre>
-                                <button
-                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
-                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
-                            </div>
-
-                            <p class="text-xs font-bold text-muted uppercase mt-4">2. Créer le fichier de service
-                                systemd :</p>
-                            <div class="relative group">
-                                <pre
-                                    class="well p-3 rounded-lg text-xs text-muted font-mono">sudo nano /etc/systemd/system/mnt-hgfs.mount</pre>
-                                <button
-                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
-                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
-                            </div>
-
-                            <p class="text-xs font-bold text-muted uppercase mt-4">3. Coller ce contenu dans le fichier
-                                :</p>
-                            <div class="relative group">
-                                <pre
-                                    class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed h-48 overflow-y-auto">[Unit]
+                                    class="well p-3 rounded-lg text-xs text-muted w-full text-left font-mono break-all whitespace-pre-wrap">sudo systemctl stop mnt-hgfs.mount 2>/dev/null && sudo systemctl stop mnt-hgfs.automount 2>/dev/null && sudo systemctl disable mnt-hgfs.mount 2>/dev/null && sudo systemctl disable mnt-hgfs.automount 2>/dev/null && sudo rm -f /etc/systemd/system/mnt-hgfs.mount && sudo rm -f /etc/systemd/system/mnt-hgfs.automount && sudo mkdir -p /mnt/hgfs && cat <<'EOF' | sudo tee /etc/systemd/system/mnt-hgfs.mount
+[Unit]
 Description=VMware HGFS mount
 ConditionPathExists=/mnt/hgfs
 ConditionVirtualization=vmware
-After=open-vm-tools.service
+After=network-online.target open-vm-tools.service
+Wants=network-online.target
+Requires=open-vm-tools.service
 
 [Mount]
 What=.host:/C
 Where=/mnt/hgfs
 Type=fuse.vmhgfs-fuse
-Options=allow_other,defaults
+Options=allow_other,defaults,uid=1000,gid=1000
 
 [Install]
-WantedBy=multi-user.target</pre>
-                                <button
-                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
-                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
-                            </div>
-                            <p class="text-xs text-muted italic">Sauvegardez avec <kbd
-                                    class="bg-white text-black px-1 rounded">Ctrl+O</kbd>, <kbd
-                                    class="bg-white text-black px-1 rounded">Entrée</kbd>, puis <kbd
-                                    class="bg-white text-black px-1 rounded">Ctrl+X</kbd></p>
+WantedBy=multi-user.target
+EOF
+cat <<'EOF' | sudo tee /etc/systemd/system/mnt-hgfs.automount
+[Unit]
+Description=VMware HGFS automount
+ConditionVirtualization=vmware
+After=open-vm-tools.service
 
-                            <p class="text-xs font-bold text-muted uppercase mt-4">4. Activer et démarrer le service :
-                            </p>
-                            <div class="relative group">
-                                <pre class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed">sudo systemctl daemon-reload
-sudo systemctl enable mnt-hgfs.mount
-sudo systemctl start mnt-hgfs.mount</pre>
-                                <button
-                                    onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
-                                    class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
-                            </div>
+[Automount]
+Where=/mnt/hgfs
+TimeoutIdleSec=0
 
-                            <p class="text-xs font-bold text-muted uppercase mt-4">5. Vérifier :</p>
-                            <div class="relative group">
-                                <pre class="well p-3 rounded-lg text-xs text-muted font-mono">ls /mnt/hgfs</pre>
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload && sudo systemctl enable mnt-hgfs.automount && sudo systemctl start mnt-hgfs.automount && ls /mnt/hgfs</pre>
                                 <button
                                     onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
                                     class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
@@ -739,6 +754,7 @@ sudo systemctl start mnt-hgfs.mount</pre>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- COPY/PASTE -->
                 <div id="copy-paste" class="space-y-4 scroll-mt-28">
@@ -975,31 +991,18 @@ sudo usermod -aG docker $USER</pre>
                                         onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
                                         class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
                                 </div>
-                                <p class="text-muted text-xs mt-2">Ensuite, <strong>redémarrez Ubuntu</strong> pour que
-                                    les changements prennent effet :</p>
-                                <div class="relative group mt-2">
-                                    <pre class="well p-3 rounded-lg text-xs text-muted font-mono">reboot</pre>
-                                    <button
-                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
-                                        class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
-                                </div>
+                                <p class="text-muted text-xs mt-2">Ensuite, <strong>redémarrez la VM</strong> pour que
+                                    les changements prennent effet.</p>
                             </div>
 
                             <div class="pt-4 border-t border-border mt-4">
                                 <h4 class="text-white font-bold text-xs uppercase mb-3">Configurer le contexte Docker
                                 </h4>
-                                <p class="text-muted text-xs mb-2">Dans votre <code>~/.bashrc</code>, ajoutez cette
-                                    ligne pour utiliser le contexte par défaut :</p>
-                                <div class="relative group">
-                                    <pre
-                                        class="well p-3 rounded-lg text-xs text-muted font-mono">echo 'docker context use default' >> ~/.bashrc</pre>
-                                    <button
-                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
-                                        class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
-                                </div>
-                                <p class="text-muted text-xs mt-2">Puis rechargez le fichier :</p>
+                                <p class="text-muted text-xs mb-2">Exécutez ces commandes pour activer Docker Desktop au
+                                    démarrage et définir le contexte :</p>
                                 <div class="relative group mt-2">
-                                    <pre class="well p-3 rounded-lg text-xs text-muted font-mono">source ~/.bashrc</pre>
+                                    <pre class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed">echo 'docker context use default' >> ~/.bashrc
+source ~/.bashrc</pre>
                                     <button
                                         onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
                                         class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
@@ -1009,40 +1012,45 @@ sudo usermod -aG docker $USER</pre>
                     </div>
                 </div>
 
+                <!-- SECTION 4: NOTES -->
+                <section id="notes" class="space-y-12 scroll-mt-24">
+                    <div class="flex items-center gap-4 pb-4 border-b border-border">
+                        <span class="font-mono font-bold text-2xl text-muted">04</span>
+                        <h2 class="text-2xl font-bold text-white">Notes Importantes</h2>
+                    </div>
 
-
-            </section>
-
-            <!-- SECTION 4: NOTES -->
-            <section id="notes" class="space-y-8 pb-20 scroll-mt-24">
-                <div class="flex items-center gap-4 pb-4 border-b border-border">
-                    <span class="font-mono font-bold text-2xl text-muted">04</span>
-                    <h2 class="text-2xl font-bold text-white">Notes Importantes</h2>
-                </div>
-
-                <!-- SUSPEND VM WARNING -->
-                <div class="plate p-6 rounded-xl border-l-4 border-red-500">
-                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
-                        <span class="text-red-500">⚠️</span>
-                        Suspendre la VM avant la mise en veille du PC
-                    </h4>
-                    <p class="text-sm text-muted leading-relaxed">
-                        <strong>Important :</strong> Suspendez toujours la VM avant de mettre votre PC en veille. Si
-                        vous ne le faites pas, lors de la reconnexion vous aurez un écran noir et il faudra redémarrer
-                        Ubuntu.
-                    </p>
-                    <p class="text-xs text-muted mt-3 italic">
-                        💡 Pour suspendre : <strong>VM → Power → Suspend Guest</strong>
-                    </p>
-                </div>
-            </section>
-
-            <footer class="border-t border-border py-12 text-center text-xs text-muted font-mono">
-                UBUNTU DESKTOP SUR WINDOWS VIA VMWARE // <span class="current-year"></span> EDITION // <span
-                    id="full-date"></span>
-            </footer>
-
+                    <div class="space-y-8">
+                        <!-- SUSPEND VM WARNING -->
+                        <div class="plate p-6 rounded-xl border-l-4 border-red-500">
+                            <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                                <span class="text-red-500">⚠️</span>
+                                Suspendre la VM avant la mise en veille du PC
+                            </h4>
+                            <p class="text-sm text-muted leading-relaxed">
+                                <strong>Important :</strong> Suspendez toujours la VM avant de mettre votre PC en
+                                veille. Si
+                                vous ne le faites pas, lors de la reconnexion vous aurez un écran noir et il faudra
+                                redémarrer
+                                Ubuntu.
+                            </p>
+                            <p class="text-xs text-muted mt-3 italic">
+                                💡 Pour suspendre : <strong>VM → Power → Suspend Guest</strong>
+                            </p>
+                        </div>
+                    </div>
+                </section>
         </div>
+
+
+
+        </section>
+
+        <footer class="border-t border-border py-12 text-center text-xs text-muted font-mono">
+            UBUNTU DESKTOP SUR WINDOWS VIA VMWARE // <span class="current-year"></span> EDITION // <span
+                id="full-date"></span>
+        </footer>
+
+    </div>
     </div>
 
     <!-- SCRIPT -->
