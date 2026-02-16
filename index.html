@@ -185,7 +185,11 @@
 
                 <div class="pt-4 pb-2 text-xs font-bold text-muted/50 uppercase tracking-wider px-4">Support</div>
                 <a href="#notes"
-                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">Notes</a>
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">05.
+                    Notes</a>
+                <a href="#troubleshooting"
+                    class="sidebar-link block px-4 py-2 text-sm text-muted hover:text-white border-l-2 border-transparent transition-all">06.
+                    Dépannage</a>
             </nav>
         </div>
     </aside>
@@ -196,7 +200,6 @@
     <!-- MAIN CONTENT WRAPPER -->
     <div class="lg:pl-64 min-h-screen transition-all duration-300">
         <div class="max-w-4xl mx-auto px-6 py-24 lg:py-20 space-y-20">
-
             <!-- HEADER -->
             <header id="header" class="text-center space-y-6 pt-10 scroll-mt-32">
                 <h1 class="text-4xl lg:text-5xl font-bold tracking-tight text-white">Ubuntu Desktop sur Windows via
@@ -204,6 +207,29 @@
                 </h1>
                 <div class="w-24 h-1 bg-white mx-auto rounded-full opacity-20"></div>
             </header>
+
+            <!-- DISCLAIMER HYPER-V -->
+            <div class="plate border-l-4 border-red-600 p-6 rounded-xl bg-red-900/10 mb-10">
+                <h2 class="text-xl font-bold text-red-500 mb-3 flex items-center gap-2">
+                    <span>⚠️</span> ATTENTION : IMPACT SUR WSL & HYPER-V
+                </h2>
+                <div class="space-y-3 text-sm text-gray-300">
+                    <p>
+                        Ce guide nécessite la <strong>désactivation complète de Hyper-V</strong> et des technologies de
+                        virtualisation Windows pour permettre à VMware de fonctionner de manière optimale.
+                    </p>
+                    <p class="font-bold text-white">
+                        Conséquence : Après avoir appliqué ces changements, WSL2 (Windows Subsystem for Linux), Docker
+                        Desktop pour Windows, le bac à sable Windows (Sandbox) et l'isolation du noyau NE FONCTIONNERONT
+                        PLUS.
+                    </p>
+                    <p class="italic text-gray-400">
+                        Un script est fourni plus bas (Section 3) pour réactiver ces fonctionnalités si besoin, mais
+                        elles ne peuvent pas cohabiter avec cette configuration VMware.
+                    </p>
+                </div>
+            </div>
+
 
 
 
@@ -244,22 +270,17 @@
                     <h3 class="text-xl font-bold text-white">A. Télécharger VMware Workstation</h3>
                     <div class="plate p-8 rounded-xl space-y-6">
                         <p class="text-muted">Téléchargez la version gratuite pour usage personnel.</p>
-                        <div class="grid md:grid-cols-2 gap-4">
+                        <div class="flex justify-center">
                             <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion"
                                 target="_blank"
                                 class="inline-flex items-center justify-center px-6 py-3 bg-white text-black font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors">
                                 <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(Site
                                         Officiel)</span></span>
                             </a>
-                            <a href="https://www.clubic.com/telecharger-fiche121950-vmware-workstation.html"
-                                target="_blank"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-surface2 text-white font-bold text-sm rounded-lg hover:bg-accent border border-border transition-colors">
-                                <span class="text-center">Télécharger VMware<br><span class="text-xs font-normal">(via
-                                        Clubic)</span></span>
-                            </a>
                         </div>
                         <p class="text-sm text-muted">Lors du lancement, sélectionnez <strong>"Use VMware Workstation
-                                for Personal Use"</strong> pour la version gratuite.</p>
+                                for Personal Use"</strong> (Utiliser VMware Workstation pour un usage personnel) pour la
+                            version gratuite.</p>
                     </div>
                 </div>
 
@@ -288,18 +309,24 @@
                     <div class="plate p-8 rounded-xl space-y-4">
                         <ol class="list-decimal list-inside text-sm text-muted space-y-3 marker:text-white">
                             <li>Lancez <strong>VMware Workstation</strong></li>
-                            <li>Cliquez sur <strong>"Create a New Virtual Machine"</strong></li>
-                            <li>Laissez <strong>"Typical"</strong> sélectionné</li>
-                            <li>Dans "Installer disc image file (iso)", cliquez sur <strong>Browse</strong> et
+                            <li>Cliquez sur <strong>"Create a New Virtual Machine"</strong> (Créer une nouvelle machine
+                                virtuelle)</li>
+                            <li>Laissez <strong>"Typical"</strong> (Typique) sélectionné</li>
+                            <li>Dans "Installer disc image file (iso)", cliquez sur <strong>Browse</strong> (Parcourir)
+                                et
                                 sélectionnez l'ISO Ubuntu téléchargé</li>
-                            <li>Entrez le <strong>Full name</strong>, <strong>Username</strong> et
-                                <strong>Password</strong> de votre choix pour Ubuntu
+                            <li>Entrez le <strong>Full name</strong> (Nom complet), <strong>Username</strong> (Nom
+                                d'utilisateur) et
+                                <strong>Password</strong> (Mot de passe) de votre choix pour Ubuntu
                             </li>
-                            <li>Modifiez le <strong>Virtual machine name</strong> et la <strong>localisation</strong> si
-                                vous le souhaitez</li>
-                            <li>Modifiez le <strong>Maximum disk size</strong> si nécessaire (20GB minimum recommandé)
+                            <li>Modifiez le <strong>Virtual machine name</strong> (Nom de la machine virtuelle) et la
+                                <strong>localisation</strong> si
+                                vous le souhaitez
                             </li>
-                            <li>Cliquez sur <strong>Finish</strong></li>
+                            <li>Modifiez le <strong>Maximum disk size</strong> (Taille maximale du disque) si nécessaire
+                                (20GB minimum recommandé)
+                            </li>
+                            <li>Cliquez sur <strong>Finish</strong> (Terminer)</li>
                         </ol>
                         <p class="text-sm text-muted pt-4">La VM devrait se lancer automatiquement. Attendez qu'Ubuntu
                             démarre.</p>
@@ -423,6 +450,9 @@
                                     Platform)</li>
                                 <li><strong>Décochez</strong> "Plateforme de l'hyperviseur Windows" (Windows Hypervisor
                                     Platform)</li>
+                                <li class="text-yellow-400 font-bold">⚠️ Si Windows vous propose de redémarrer
+                                    maintenant, cliquez sur <strong>NON</strong> (ne pas redémarrer tout de suite) !
+                                </li>
                             </ol>
                         </div>
 
@@ -430,7 +460,8 @@
                             <h4 class="font-bold text-white text-sm mb-2">B. Réglages VMware</h4>
                             <p class="text-xs text-muted mb-3">Dans les réglages de votre VM :</p>
                             <ol class="list-decimal list-inside text-sm text-muted space-y-1 marker:text-white">
-                                <li>Allez dans <strong>VM Settings > Processors</strong></li>
+                                <li>Allez dans <strong>VM Settings > Processors</strong> (Réglages VM > Processeurs)
+                                </li>
                                 <li>Cochez <strong>Virtualize Intel VT-x/EPT or AMD-V/RVI</strong></li>
                             </ol>
                         </div>
@@ -453,6 +484,9 @@
                                 <strong>Toutefois :</strong> Pensez à vérifier que les cases de l'étape 2A (notamment
                                 <em>Plateforme d'ordinateur virtuel</em>) sont bien <strong>recochées</strong> dans les
                                 fonctionnalités Windows pour que WSL2 fonctionne correctement.
+                            </p>
+                            <p class="text-sm text-green-400 font-bold mt-2">✅ À la fin de l'exécution du script, dites
+                                <strong>OUI</strong> pour redémarrer votre PC !
                             </p>
                         </div>
 
@@ -500,8 +534,9 @@ echo DESACTIVATION de Hyper-V et Isolation
 echo ============================================
 echo.
 
-echo [1/4] Desactivation du lancement de l'hyperviseur...
+echo [1/9] Desactivation du lancement de l'hyperviseur...
 bcdedit /set hypervisorlaunchtype off
+bcdedit /set {current} hypervisorlaunchtype off
 if %errorLevel% equ 0 (
     echo OK - Hyperviseur desactive
 ) else (
@@ -509,8 +544,17 @@ if %errorLevel% equ 0 (
 )
 echo.
 
-echo [2/4] Desactivation de Hyper-V...
-powershell -Command "Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart"
+echo [2/9] Desactivation de VirtualMachinePlatform...
+dism /online /disable-feature /featurename:VirtualMachinePlatform /norestart
+if %errorLevel% equ 0 (
+    echo OK - VirtualMachinePlatform desactive
+) else (
+    echo ERREUR lors de la desactivation de VirtualMachinePlatform
+)
+echo.
+
+echo [3/9] Desactivation de Hyper-V...
+dism /online /disable-feature /featurename:Microsoft-Hyper-V-All /featurename:VirtualMachinePlatform /featurename:HypervisorPlatform
 if %errorLevel% equ 0 (
     echo OK - Hyper-V desactive
 ) else (
@@ -518,22 +562,53 @@ if %errorLevel% equ 0 (
 )
 echo.
 
-echo [3/4] Desactivation de la plateforme d'hyperviseur...
-powershell -Command "Disable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -NoRestart"
+echo [4/9] Desactivation de WSL...
+dism /online /disable-feature /featurename:Microsoft-Windows-Subsystem-Linux /norestart
 if %errorLevel% equ 0 (
-    echo OK - Plateforme d'hyperviseur desactivee
+    echo OK - WSL desactive
+) else (
+    echo ERREUR lors de la desactivation de WSL
+)
+echo.
+
+echo [5/9] Desactivation de HypervisorPlatform...
+dism /online /disable-feature /featurename:HypervisorPlatform /norestart
+if %errorLevel% equ 0 (
+    echo OK - HypervisorPlatform desactive
 ) else (
     echo ERREUR lors de la desactivation de HypervisorPlatform
 )
 echo.
 
-echo [4/4] Desactivation de l'integrite de la memoire...
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v "Enabled" /t REG_DWORD /d 0 /f >nul 2>&1
+echo [6/9] Desactivation de VBS (Virtualization Based Security)...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 0 /f >nul 2>&1
 if %errorLevel% equ 0 (
-    echo OK - Integrite de la memoire desactivee
+    echo OK - VBS desactive
+) else (
+    echo ERREUR lors de la desactivation de VBS
+)
+echo.
+
+echo [7/9] Desactivation de RequirePlatformSecurityFeatures...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "RequirePlatformSecurityFeatures" /t REG_DWORD /d 0 /f >nul 2>&1
+if %errorLevel% equ 0 (
+    echo OK - RequirePlatformSecurityFeatures desactive
 ) else (
     echo ERREUR lors de la modification du registre
 )
+echo.
+
+echo [8/9] Desactivation de HVCI / Memory Integrity...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v "Enabled" /t REG_DWORD /d 0 /f >nul 2>&1
+if %errorLevel% equ 0 (
+    echo OK - HVCI / Memory Integrity desactive
+) else (
+    echo ERREUR lors de la modification du registre
+)
+echo.
+
+echo [9/9] Verification finale...
+echo Toutes les operations ont ete effectuees.
 echo.
 
 echo ============================================
@@ -722,8 +797,8 @@ fi
                             <li>Allez dans <strong>VM → Settings</strong></li>
                             <li>Dans l'onglet <strong>Options</strong>, sélectionnez <strong>Guest Isolation</strong>
                             </li>
-                            <li>Activez <strong>Enable drag and drop</strong></li>
-                            <li>Activez <strong>Enable copy and paste</strong></li>
+                            <li>Activez <strong>Enable drag and drop</strong> (Activer le glisser-déposer)</li>
+                            <li>Activez <strong>Enable copy and paste</strong> (Activer copier-coller)</li>
                         </ol>
                         <p class="text-sm text-green-200/80 mt-4">✅ Vous pourrez maintenant glisser/déposer et
                             copier/coller entre Windows et Ubuntu !</p>
@@ -745,9 +820,10 @@ fi
                             <li>Cliquez sur <strong>Add...</strong></li>
                             <li><strong>Host path</strong> : Cliquez sur Browse et sélectionnez <code>C:\</code></li>
                             <li><strong>Name</strong> : Tapez exactement <code>C</code> (majuscule, important !)</li>
-                            <li>✅ Cochez <strong>Enable this share</strong></li>
-                            <li>✅ Cochez <strong>Read-only</strong> si vous voulez juste lire (optionnel)</li>
-                            <li>Cliquez sur <strong>Next</strong> puis <strong>Finish</strong></li>
+                            <li>✅ Cochez <strong>Enable this share</strong> (Activer ce partage)</li>
+                            <li>✅ Cochez <strong>Read-only</strong> (Lecture seule) si vous voulez juste lire
+                                (optionnel)</li>
+                            <li>Cliquez sur <strong>Next</strong> (Suivant) puis <strong>Finish</strong> (Terminer)</li>
                         </ol>
                         <div class="bg-blue-900/20 border border-blue-700/30 p-4 rounded-lg mt-4">
                             <p class="text-sm text-blue-200/80">ℹ️ Vérifiez que le dossier partagé apparaît comme :
@@ -836,7 +912,8 @@ fi
                             <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
                                 <li><strong>Éteignez complètement</strong> votre VM Ubuntu.</li>
                                 <li>Dans VMware, faites <strong>Clic droit</strong> sur votre VM →
-                                    <strong>Settings</strong>.</li>
+                                    <strong>Settings</strong>.
+                                </li>
                                 <li>Sélectionnez <strong>Hard Disk</strong>.</li>
                                 <li>Cliquez sur <strong>Expand...</strong> sur la droite.</li>
                                 <li>Indiquez la nouvelle taille souhaitée (ex: 40 GB ou 60 GB).</li>
@@ -860,7 +937,8 @@ fi
                                         class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
                                 </div>
                                 <p class="text-xs text-muted">Repérez votre partition principale (souvent
-                                    <code>/dev/sda2</code> ou <code>/dev/sda3</code>).</p>
+                                    <code>/dev/sda2</code> ou <code>/dev/sda3</code>).
+                                </p>
 
                                 <p class="text-xs font-bold text-muted uppercase mt-2">2. Agrandir la partition</p>
                                 <div class="relative group">
@@ -937,30 +1015,22 @@ fi
                 <div id="chrome" class="space-y-4 scroll-mt-28">
                     <h3 class="text-xl font-bold text-white">Google Chrome & Navigateurs</h3>
 
-                    <div class="bg-yellow-900/10 border border-yellow-700/30 p-6 rounded-lg">
-                        <h4 class="font-bold text-yellow-500 mb-2">⚠️ Note importante sur les navigateurs</h4>
-                        <p class="text-sm text-yellow-200/80 leading-relaxed">
-                            Pour le <strong>rendu visuel</strong> (vidéo, fluidité), il est souvent préférable
-                            d'utiliser votre navigateur Windows.<br>
-                            Cependant, pour le <strong>développement web</strong> (technique), utilisez le navigateur
-                            dans WSL pour éviter les problèmes de réseaux ou de fichiers (ex: CSRF, permissions).
-                        </p>
-                    </div>
-
                     <div class="plate p-6 rounded-xl space-y-4">
-                        <p class="text-sm text-muted">Installation de Chrome stable dans WSL :</p>
+                        <p class="text-sm text-muted">Installation de Chrome stable dans Ubuntu :</p>
+                        <p class="text-xs text-muted italic">💡 <strong>Astuce :</strong> Utilisez
+                            <strong>Firefox</strong> (installé par défaut dans Ubuntu) pour télécharger le fichier .deb
+                            depuis <a href="https://www.google.com/chrome/" target="_blank"
+                                class="text-white underline">google.com/chrome</a>.
+                        </p>
                         <div class="space-y-2">
+                            <p class="text-xs text-muted">Une fois téléchargé (dans le dossier <code>Downloads</code>),
+                                lancez :</p>
                             <code
-                                class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb</code>
-                            <code
-                                class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">sudo apt install ./google-chrome-stable_current_amd64.deb</code>
+                                class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">sudo apt install ./Downloads/google-chrome-stable_current_amd64.deb</code>
                         </div>
                         <p class="text-sm text-muted pt-2">Pour lancer Chrome :</p>
                         <code
                             class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">google-chrome &</code>
-                        <p class="text-sm text-muted pt-4">Nettoyer l'installateur :</p>
-                        <code
-                            class="block bg-black p-3 rounded text-xs font-mono text-muted border border-border">rm -f ./google-chrome-stable_current_amd64.deb</code>
                     </div>
 
                     <!-- CHROME FAST DEV -->
@@ -1102,6 +1172,10 @@ echo "✅ Chrome Fast installé. Raccourci bureau créé."</pre>
                     <div class="plate p-6 rounded-xl space-y-4">
                         <p class="text-sm text-muted">Si vous utilisez Docker Desktop, voici comment le configurer
                             correctement.</p>
+                        <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg">
+                            <p class="text-sm text-yellow-200/80">⚠️ <strong>Important :</strong> Effectuez ces étapes
+                                uniquement <strong>APRÈS</strong> l'installation complète de Docker Desktop.</p>
+                        </div>
 
                         <div class="space-y-4 text-sm">
                             <div class="pt-4 border-t border-border mt-4">
@@ -1147,7 +1221,7 @@ source ~/.bashrc</pre>
                 <!-- SECTION 4: NOTES -->
                 <section id="notes" class="space-y-12 scroll-mt-24">
                     <div class="flex items-center gap-4 pb-4 border-b border-border">
-                        <span class="font-mono font-bold text-2xl text-muted">04</span>
+                        <span class="font-mono font-bold text-2xl text-muted">05</span>
                         <h2 class="text-2xl font-bold text-white">Notes Importantes</h2>
                     </div>
 
@@ -1168,12 +1242,110 @@ source ~/.bashrc</pre>
                             <p class="text-xs text-muted mt-3 italic">
                                 💡 Pour suspendre : <strong>VM → Power → Suspend Guest</strong>
                             </p>
+                            <p class="text-xs text-green-400 mt-2 font-bold">
+                                💡 <strong>Astuce de secours :</strong> Si jamais vous avez oublié de suspendre et que
+                                la VM est figée/noire, essayez d'appuyer sur la <kbd
+                                    class="bg-white text-black px-1 rounded">Touche Windows</kbd> DANS la VM. Cela peut
+                                parfois réactiver l'écran et permettre de se relogin sans redémarrer.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 5: DÉPANNAGE -->
+                <section id="troubleshooting" class="space-y-12 scroll-mt-24">
+                    <div class="flex items-center gap-4 pb-4 border-b border-border">
+                        <span class="font-mono font-bold text-2xl text-muted">06</span>
+                        <h2 class="text-2xl font-bold text-white">Dépannage</h2>
+                    </div>
+
+                    <div class="space-y-8">
+                        <!-- Troubleshooting Section -->
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-white">Problèmes de Virtualisation Persistants</h3>
+                            <div class="plate p-8 rounded-xl space-y-6 border-l-4 border-red-500">
+                                <h4 class="font-bold text-white text-lg flex items-center gap-2">
+                                    <span class="text-red-500">🛑</span>
+                                    Si Docker Desktop ne fonctionne toujours pas (Erreur 0x80000003)
+                                </h4>
+                                <p class="text-sm text-muted">
+                                    Même après avoir correctement configuré la virtualisation, certains PC (notamment
+                                    Gigabyte)
+                                    peuvent avoir des problèmes avec <strong>Secure Launch / Device Guard</strong>.
+                                    Voici
+                                    comment résoudre :
+                                </p>
+
+                                <div class="bg-yellow-900/10 border border-yellow-700/30 p-4 rounded-lg">
+                                    <h5 class="font-bold text-yellow-500 mb-2">📥 Étape 1 : DG Readiness Tool</h5>
+                                    <ol class="list-decimal list-inside text-sm text-muted space-y-2 marker:text-white">
+                                        <li>Téléchargez le <strong>DG Readiness Tool</strong> : <a
+                                                href="https://www.microsoft.com/en-us/download/details.aspx?id=53337"
+                                                target="_blank" class="text-white underline">Lien Microsoft</a></li>
+                                        <li>Extrayez le dossier téléchargé</li>
+                                        <li>Ouvrez un <strong>Terminal PowerShell en tant qu'Administrateur</strong>
+                                        </li>
+                                        <li>Allez dans le dossier extrait (ex:
+                                            <code>cd C:\Users\VotreNom\Desktop\dgreadiness</code>)
+                                        </li>
+                                        <li>Lancez cette commande précise :</li>
+                                    </ol>
+                                    <div class="relative group mt-3">
+                                        <pre
+                                            class="well p-3 rounded-lg text-xs text-muted font-mono">powershell.exe -ExecutionPolicy Bypass -File DG_Readiness_Tool_v3.6.ps1 -Disable</pre>
+                                        <button
+                                            onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                            class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                    </div>
+                                    <p class="text-xs text-yellow-200/80 mt-2">
+                                        ⚠️ Au redémarrage, votre PC peut afficher un écran spécial demandant de
+                                        confirmer avec
+                                        une touche (F3 ou autre) pour désactiver le "Secure Launch".
+                                        <strong>Acceptez</strong>.
+                                    </p>
+                                </div>
+
+                                <div class="bg-blue-900/20 border border-blue-700/30 p-4 rounded-lg">
+                                    <h5 class="font-bold text-blue-400 mb-2">🐳 Étape 2 : Désinstaller Docker Desktop
+                                        (si
+                                        nécessaire)</h5>
+                                    <p class="text-sm text-muted mb-2">Si Docker Desktop était déjà installé,
+                                        désinstallez-le
+                                        complètement avant de réessayer :</p>
+                                    <div class="relative group">
+                                        <pre class="well p-3 rounded-lg text-xs text-muted font-mono leading-relaxed">sudo apt remove docker-desktop
+sudo apt purge docker-desktop
+sudo apt autoremove
+rm -rf ~/.docker/desktop
+sudo rm -rf /usr/local/bin/com.docker.cli</pre>
+                                        <button
+                                            onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                            class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                    </div>
+                                    <p class="text-xs text-muted mt-2 italic">Ensuite, réinstallez Docker Desktop
+                                        normalement.
+                                    </p>
+                                </div>
+
+                                <div class="bg-green-900/20 border border-green-700/30 p-4 rounded-lg">
+                                    <h5 class="font-bold text-green-400 mb-2">🔄 Pour Réactiver Device Guard (si besoin)
+                                    </h5>
+                                    <p class="text-sm text-muted mb-2">Si vous voulez réactiver Device Guard plus tard,
+                                        utilisez
+                                        la même commande avec <code>-Enable</code> :</p>
+                                    <div class="relative group">
+                                        <pre
+                                            class="well p-3 rounded-lg text-xs text-muted font-mono">powershell.exe -ExecutionPolicy Bypass -File DG_Readiness_Tool_v3.6.ps1 -Enable</pre>
+                                        <button
+                                            onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                            class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
         </div>
-
-
 
         </section>
 
