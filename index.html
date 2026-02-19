@@ -460,9 +460,30 @@
                             <h4 class="font-bold text-white text-sm mb-2">B. Réglages VMware</h4>
                             <p class="text-xs text-muted mb-3">Dans les réglages de votre VM :</p>
                             <ol class="list-decimal list-inside text-sm text-muted space-y-1 marker:text-white">
-                                <li>Allez dans <strong>VM Settings > Processors</strong> (Réglages VM > Processeurs)
+                                <li>Allez dans <strong>VM Settings > Memory</strong> (Mémoire RAM)</li>
+                                <ul class="pl-6 list-disc text-xs text-muted mb-2">
+                                    <li>Ajustez le curseur selon vos besoins.</li>
+                                    <li>Respectez les 3 indicateurs : <strong>Recommandé, Minimal, Maximal</strong>.
+                                    </li>
+                                    <li>Ne dépassez jamais la ligne "Maximum recommended" pour éviter de ralentir votre
+                                        PC hôte.</li>
+                                </ul>
+
+                                <li>Allez dans <strong>VM Settings > Processors</strong> (Processeurs)</li>
+                                <ul class="pl-6 list-disc text-xs text-muted mb-2">
+                                    <li>Privilégiez le <strong>Nombre de processeurs</strong> au nombre de cœurs par
+                                        processeur.</li>
+                                    <li>Pour connaître votre limite : Ouvrez le Gestionnaire des tâches Windows
+                                        (Ctrl+Maj+Échap) > Performance > CPU.</li>
+                                    <li>Repérez "Processeurs logiques" en bas à droite (ex: 16).</li>
+                                    <li>Dans VMware, mettez "Number of processors" au maximum possible (ex: 16) et
+                                        "Number of cores per processor" à 1.</li>
+                                    <li>Si VMware refuse la valeur maximale, entrez une valeur inférieure manuellement.
+                                    </li>
+                                </ul>
+
+                                <li>Cochez <strong>Virtualize Intel VT-x/EPT or AMD-V/RVI</strong> (dans Processors)
                                 </li>
-                                <li>Cochez <strong>Virtualize Intel VT-x/EPT or AMD-V/RVI</strong></li>
                             </ol>
                         </div>
                     </div>
@@ -1037,11 +1058,10 @@ fi
                     <div class="plate p-6 rounded-xl space-y-4 border-l-4 border-blue-500">
                         <div class="flex items-center gap-3 mb-2">
                             <span class="text-xl">🚀</span>
-                            <h4 class="font-bold text-white">Chrome Fast Dev (Ultra Optimisé)</h4>
+                            <h4 class="font-bold text-white">Chrome Fast Dev (WebGL & Ultra Rapide)</h4>
                         </div>
-                        <p class="text-sm text-muted">Version ultra-légère et optimisée pour le <strong>développement
-                                uniquement</strong>. Désactive les services inutiles, le cache agressif, et optimise la
-                            RAM.</p>
+                        <p class="text-sm text-muted">Version optimisée pour la performance pure : WebGL activé, rendu
+                            GPU forcé, télémétrie désactivée, et garbage collection agressif.</p>
 
                         <div class="bg-surface2 p-4 rounded border border-border space-y-2">
                             <p class="text-xs text-muted font-bold uppercase">Installation (Copier-coller tout le bloc)
@@ -1051,6 +1071,11 @@ fi
                                     class="well p-4 rounded-lg overflow-x-auto text-[10px] text-muted font-mono leading-relaxed whitespace-pre-wrap h-64">sudo tee /usr/local/bin/chrome-fast > /dev/null << 'WRAPPER'
 #!/bin/bash
 exec /usr/bin/google-chrome-stable \
+  --ignore-gpu-blocklist \
+  --enable-gpu-rasterization \
+  --enable-zero-copy \
+  --use-gl=angle \
+  --use-angle=gl \
   --disable-background-apps \
   --disable-background-networking \
   --disable-background-timer-throttling \
@@ -1097,7 +1122,7 @@ Type=Application
 Name=Chrome Fast
 GenericName=Navigateur Web
 Comment=Google Chrome ultra-optimisé
-Exec=/usr/local/bin/chrome-fast --new-window --class=ChromeFast --user-data-dir=/tmp/chrome-fast-profile about:newtab
+Exec=/usr/local/bin/chrome-fast --new-window --class=ChromeFast about:newtab
 Icon=google-chrome
 Terminal=false
 Categories=Network;WebBrowser;
@@ -1112,7 +1137,7 @@ Type=Application
 Name=Chrome Fast
 GenericName=Navigateur Web
 Comment=Google Chrome ultra-optimisé
-Exec=/usr/local/bin/chrome-fast --new-window --class=ChromeFast --user-data-dir=/tmp/chrome-fast-profile about:newtab
+Exec=/usr/local/bin/chrome-fast --new-window --class=ChromeFast about:newtab
 Icon=google-chrome
 Terminal=false
 Categories=Network;WebBrowser;
@@ -1121,40 +1146,7 @@ StartupWMClass=ChromeFast
 EOF
 chmod +x "$BUREAU/ChromeFast.desktop" && \
 gio set "$BUREAU/ChromeFast.desktop" metadata::trusted true 2>/dev/null && \
-mkdir -p /tmp/chrome-fast-profile && \
-CHROME_DIR="$HOME/.config/google-chrome/Default" && \
-rm -rf "$CHROME_DIR/Cache"/* \
-       "$CHROME_DIR/Code Cache"/* \
-       "$CHROME_DIR/GPUCache"/* \
-       "$CHROME_DIR/ShaderCache"/* \
-       "$CHROME_DIR/DawnCache"/* \
-       "$CHROME_DIR/Service Worker/CacheStorage"/* \
-       "$CHROME_DIR/Service Worker/ScriptCache"/* \
-       "$HOME/.config/google-chrome/ShaderCache"/* \
-       "$HOME/.config/google-chrome/GrShaderCache"/* && \
-systemctl --user stop google-chrome.service 2>/dev/null ; \
-systemctl --user disable google-chrome.service 2>/dev/null ; \
-systemctl --user stop chrome-remote-desktop@$USER.service 2>/dev/null ; \
-systemctl --user disable chrome-remote-desktop@$USER.service 2>/dev/null ; \
-rm -f ~/.config/autostart/google-chrome.desktop 2>/dev/null && \
-PREFS="$CHROME_DIR/Preferences" && \
-if [ -f "$PREFS" ]; then \
-  python3 -c "
-import json
-with open('$PREFS', 'r') as f:
-    p = json.load(f)
-p.setdefault('background_mode', {})['enabled'] = False
-p.setdefault('net', {})['network_prediction_options'] = 2
-p.setdefault('dns_prefetching', {})['enabled'] = False
-p.setdefault('browser', {})['check_default_browser'] = False
-p.setdefault('spellcheck', {})['use_spelling_service'] = False
-with open('$PREFS', 'w') as f:
-    json.dump(p, f, indent=2)
-" 2>/dev/null ; \
-fi && \
-update-desktop-database ~/.local/share/applications/ 2>/dev/null && \
-kbuildsycoca5 --noincremental 2>/dev/null && \
-echo "✅ Chrome Fast installé. Raccourci bureau créé."</pre>
+echo "✅ Chrome Fast installé. Profil principal utilisé, ultra rapide, WebGL activé."</pre>
                                 <button
                                     onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
                                     class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-3 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
