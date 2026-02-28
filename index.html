@@ -463,6 +463,7 @@
                                 <li>Allez dans <strong>VM Settings > Memory</strong> (Mémoire RAM)</li>
                                 <ul class="pl-6 list-disc text-xs text-muted mb-2">
                                     <li>Ajustez le curseur selon vos besoins.</li>
+                                    <li>À titre indicatif, vous pouvez mettre la RAM au niveau du <strong>Maximum recommended</strong> pour de meilleures performances, bien que ce ne soit pas une obligation.</li>
                                     <li>Respectez les 3 indicateurs : <strong>Recommandé, Minimal, Maximal</strong>.
                                     </li>
                                     <li>Ne dépassez jamais la ligne "Maximum recommended" pour éviter de ralentir votre
@@ -476,9 +477,8 @@
                                     <li>Pour connaître votre limite : Ouvrez le Gestionnaire des tâches Windows
                                         (Ctrl+Maj+Échap) > Performance > CPU.</li>
                                     <li>Repérez "Processeurs logiques" en bas à droite (ex: 16).</li>
-                                    <li>Dans VMware, mettez "Number of processors" au maximum possible (ex: 16) et
-                                        "Number of cores per processor" à 1.</li>
-                                    <li>Si VMware refuse la valeur maximale, entrez une valeur inférieure manuellement.
+                                    <li>Dans VMware, il est conseillé de mettre "Number of processors" aux <strong>3/4 du nombre maximum affiché</strong> (ex: si 16, mettez 12) et "Number of cores per processor" à 1. Cela reste une indication et non une obligation.</li>
+                                    <li>Si VMware refuse la valeur choisie, entrez une valeur inférieure manuellement.
                                     </li>
                                 </ul>
 
@@ -761,6 +761,22 @@ sudo systemctl start vmtoolsd
                         </div>
                         <p class="text-sm text-muted">Après l'installation, <strong>redémarrez la VM</strong>
                             avant de passer aux étapes suivantes.</p>
+                    </div>
+                </div>
+
+                <!-- GNOME ANIMATION OPTIMIZATION -->
+                <div id="gnome-optimization" class="space-y-4 scroll-mt-28">
+                    <h3 class="text-xl font-bold text-white">Optimisation de la fluidité (Animations GNOME)</h3>
+                    <div class="plate p-6 rounded-xl space-y-4">
+                        <p class="text-sm text-muted">
+                            Par défaut, Ubuntu Desktop utilise l'environnement de bureau GNOME. Pour rendre la machine virtuelle nettement plus fluide, il est conseillé de désactiver les animations.  
+                        </p>
+                        <div class="relative group">
+                            <pre class="well p-3 rounded-lg text-xs text-muted font-mono whitespace-pre-wrap break-all">gsettings set org.gnome.desktop.interface enable-animations false</pre>
+                            <button
+                                onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); this.innerText='Copié!'"
+                                class="absolute top-2 right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-gray-200 transition-colors">Copier</button>
+                        </div>
                     </div>
                 </div>
 
